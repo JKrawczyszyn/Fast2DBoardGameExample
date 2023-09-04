@@ -26,7 +26,9 @@ public class FieldsView : MonoBehaviour
             {
                 Vector3 position = new(x - ((width - 1) / 2f), y - ((height - 1) / 2f), 0f);
 
-                Field field = Instantiate(assetsRepository.fieldsConfig.prefab, position, Quaternion.identity, transform);
+                Field field = Instantiate(assetsRepository.fieldsConfig.prefab, position, Quaternion.identity,
+                    transform);
+
                 field.Initialize(assetsRepository, FieldType.Normal, x, y);
             }
         }
