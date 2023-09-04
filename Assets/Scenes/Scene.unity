@@ -244,7 +244,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75fb2181fac106c4d9708c0a9636f09a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  boardConfig: {fileID: 11400000, guid: dc6bc5cfcb4a58446a6780b3e9280173, type: 2}
   camera: {fileID: 519420031}
+  assetsRepository: {fileID: 11400000, guid: 4d5fd55e42d7efc4e8bde9fcdd44fb7b, type: 2}
 --- !u!4 &630088319
 Transform:
   m_ObjectHideFlags: 0
