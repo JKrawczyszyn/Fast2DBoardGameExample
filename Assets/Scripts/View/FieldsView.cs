@@ -5,10 +5,13 @@ public class FieldsView : MonoBehaviour
     private AssetsRepository assetsRepository;
     private BoardConfig boardConfig;
 
-    private void Start()
+    private void Awake()
     {
         Inject();
+    }
 
+    private void Start()
+    {
         CreateBoard(boardConfig.Width, boardConfig.Height);
     }
 

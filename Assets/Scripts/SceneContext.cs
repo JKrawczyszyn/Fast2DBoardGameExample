@@ -11,6 +11,9 @@ public class SceneContext : MonoBehaviour
     [SerializeField]
     private AssetsRepository assetsRepository;
 
+    [SerializeField]
+    private InputView inputView;
+
     private void Awake()
     {
         DiManager.Instance.Initialize();
@@ -29,5 +32,6 @@ public class SceneContext : MonoBehaviour
     {
         DiManager.Instance.Register(camera);
         DiManager.Instance.Register(assetsRepository);
+        DiManager.Instance.Register(inputView);
     }
 }

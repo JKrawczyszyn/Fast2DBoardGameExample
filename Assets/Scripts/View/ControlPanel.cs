@@ -6,45 +6,37 @@ public class ControlPanel : MonoBehaviour
     [SerializeField]
     private Slider scaleSlider;
 
-    private BoardConfig boardConfig;
-    private Camera camera;
+    private InputView inputView;
 
-    private float minScale, maxScale;
-
-    private void Start()
+    private void Awake()
     {
         Inject();
-
-        SetScaleBoundaries();
-        InitializeSlider();
     }
 
     private void Inject()
     {
-        boardConfig = DiManager.Instance.Resolve<BoardConfig>();
-        camera = DiManager.Instance.Resolve<Camera>();
+        inputView = DiManager.Instance.Resolve<InputView>();
     }
 
-    private void SetScaleBoundaries()
+    private void Start()
     {
-        minScale = 1f;
-        maxScale = Mathf.Max(boardConfig.Width, boardConfig.Height) / 2f / Mathf.Min(camera.aspect, 1f);
+        InitializeSlider();
     }
 
     private void InitializeSlider()
     {
-        scaleSlider.minValue = minScale;
-        scaleSlider.maxValue = maxScale;
-        scaleSlider.value = maxScale;
+        scaleSlider.minValue = inputView.ScaleMin;
+        scaleSlider.maxValue = inputView.ScaleMax;
+        scaleSlider.value = inputView.ScaleMax;
 
         scaleSlider.onValueChanged.AddListener(ScaleSliderValueChanged);
 
-        ScaleSliderValueChanged(maxScale);
+        ScaleSliderValueChanged(inputView.ScaleMax);
     }
 
     private void ScaleSliderValueChanged(float value)
     {
-        camera.orthographicSize = value;
+        inputView.SetScale(value);
     }
 
     private void OnDestroy()
