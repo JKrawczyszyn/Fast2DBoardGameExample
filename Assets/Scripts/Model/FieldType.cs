@@ -1,5 +1,8 @@
-public enum FieldType
+namespace Model
 {
-    Normal,
-    Blocked,
+    public enum FieldType
+    {
+        Normal,
+        Blocked,
+    }
 }

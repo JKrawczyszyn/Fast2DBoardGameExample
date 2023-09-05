@@ -1,19 +1,24 @@
+using Model;
 using UnityEngine;
 
-public class Field : MonoBehaviour
+namespace View
 {
-    [SerializeField]
-    private SpriteRenderer sprite;
-
-    public void Initialize(AssetsRepository assetsRepository, FieldType type, int x, int y)
+    public class Field : MonoBehaviour
     {
-        if (type == FieldType.Blocked)
+        [SerializeField]
+        private SpriteRenderer sprite;
+
+        public void Initialize(AssetsRepository assetsRepository, FieldType type, int x, int y)
         {
-            sprite.color = assetsRepository.fieldsConfig.colorBlocked;
+            if (type == FieldType.Blocked)
+            {
+                sprite.color = assetsRepository.fieldsConfig.colorBlocked;
 
-            return;
+                return;
+            }
+
+            sprite.color = (x + y) % 2 == 1 ? assetsRepository.fieldsConfig.color2
+                : assetsRepository.fieldsConfig.color1;
         }
-
-        sprite.color = (x + y) % 2 == 1 ? assetsRepository.fieldsConfig.color2 : assetsRepository.fieldsConfig.color1;
     }
 }

@@ -1,38 +1,42 @@
+using Model;
 using UnityEngine;
 
-public class FieldsView : MonoBehaviour
+namespace View
 {
-    private AssetsRepository assetsRepository;
-    private BoardConfig boardConfig;
-
-    private void Awake()
+    public class FieldsView : MonoBehaviour
     {
-        Inject();
-    }
+        private AssetsRepository assetsRepository;
+        private BoardConfig boardConfig;
 
-    private void Start()
-    {
-        CreateBoard(boardConfig.Width, boardConfig.Height);
-    }
-
-    private void Inject()
-    {
-        assetsRepository = DiManager.Instance.Resolve<AssetsRepository>();
-        boardConfig = DiManager.Instance.Resolve<BoardConfig>();
-    }
-
-    private void CreateBoard(int width, int height)
-    {
-        for (var x = 0; x < width; x++)
+        private void Awake()
         {
-            for (var y = 0; y < height; y++)
+            Inject();
+        }
+
+        private void Start()
+        {
+            CreateBoard(boardConfig.Width, boardConfig.Height);
+        }
+
+        private void Inject()
+        {
+            assetsRepository = DiManager.Instance.Resolve<AssetsRepository>();
+            boardConfig = DiManager.Instance.Resolve<BoardConfig>();
+        }
+
+        private void CreateBoard(int width, int height)
+        {
+            for (var x = 0; x < width; x++)
             {
-                Vector3 position = new(x - ((width - 1) / 2f), y - ((height - 1) / 2f), 0f);
+                for (var y = 0; y < height; y++)
+                {
+                    Vector3 position = new(x - ((width - 1) / 2f), y - ((height - 1) / 2f), 0f);
 
-                Field field = Instantiate(assetsRepository.fieldsConfig.prefab, position, Quaternion.identity,
-                    transform);
+                    Field field = Instantiate(assetsRepository.fieldsConfig.prefab, position, Quaternion.identity,
+                        transform);
 
-                field.Initialize(assetsRepository, FieldType.Normal, x, y);
+                    field.Initialize(assetsRepository, FieldType.Normal, x, y);
+                }
             }
         }
     }

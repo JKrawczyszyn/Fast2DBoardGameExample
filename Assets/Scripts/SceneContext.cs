@@ -1,4 +1,6 @@
+using Model;
 using UnityEngine;
+using View;
 
 public class SceneContext : MonoBehaviour
 {

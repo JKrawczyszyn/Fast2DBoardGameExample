@@ -1,15 +1,18 @@
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "AssetsRepository", menuName = "ScriptableObjects/AssetsRepository")]
-public class AssetsRepository : ScriptableObject
+namespace View
 {
-    public FieldsConfig fieldsConfig;
-}
+    [CreateAssetMenu(fileName = "AssetsRepository", menuName = "ScriptableObjects/AssetsRepository")]
+    public class AssetsRepository : ScriptableObject
+    {
+        public FieldsConfig fieldsConfig;
+    }
 
-[Serializable]
-public class FieldsConfig
-{
-    public Field prefab;
-    public Color color1, color2, colorBlocked;
+    [Serializable]
+    public class FieldsConfig
+    {
+        public Field prefab;
+        public Color color1, color2, colorBlocked;
+    }
 }

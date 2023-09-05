@@ -1,46 +1,49 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ControlPanel : MonoBehaviour
+namespace View
 {
-    [SerializeField]
-    private Slider scaleSlider;
-
-    private InputView inputView;
-
-    private void Awake()
+    public class ControlPanel : MonoBehaviour
     {
-        Inject();
-    }
+        [SerializeField]
+        private Slider scaleSlider;
 
-    private void Inject()
-    {
-        inputView = DiManager.Instance.Resolve<InputView>();
-    }
+        private InputView inputView;
 
-    private void Start()
-    {
-        InitializeSlider();
-    }
+        private void Awake()
+        {
+            Inject();
+        }
 
-    private void InitializeSlider()
-    {
-        scaleSlider.minValue = inputView.ScaleMin;
-        scaleSlider.maxValue = inputView.ScaleMax;
-        scaleSlider.value = inputView.ScaleMax;
+        private void Inject()
+        {
+            inputView = DiManager.Instance.Resolve<InputView>();
+        }
 
-        scaleSlider.onValueChanged.AddListener(ScaleSliderValueChanged);
+        private void Start()
+        {
+            InitializeSlider();
+        }
 
-        ScaleSliderValueChanged(inputView.ScaleMax);
-    }
+        private void InitializeSlider()
+        {
+            scaleSlider.minValue = inputView.ScaleMin;
+            scaleSlider.maxValue = inputView.ScaleMax;
+            scaleSlider.value = inputView.ScaleMax;
 
-    private void ScaleSliderValueChanged(float value)
-    {
-        inputView.SetScale(value);
-    }
+            scaleSlider.onValueChanged.AddListener(ScaleSliderValueChanged);
 
-    private void OnDestroy()
-    {
-        scaleSlider.onValueChanged.RemoveListener(ScaleSliderValueChanged);
+            ScaleSliderValueChanged(inputView.ScaleMax);
+        }
+
+        private void ScaleSliderValueChanged(float value)
+        {
+            inputView.SetScale(value);
+        }
+
+        private void OnDestroy()
+        {
+            scaleSlider.onValueChanged.RemoveListener(ScaleSliderValueChanged);
+        }
     }
 }
