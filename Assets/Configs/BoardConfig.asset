@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d9136bb1b244beb9fb87b49ba8f0ae5, type: 3}
   m_Name: BoardConfig
   m_EditorClassIdentifier: 
-  fileName: BoardConfig
+  blockedChance: 0.25

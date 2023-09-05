@@ -20,20 +20,33 @@ public class SceneContext : MonoBehaviour
     {
         DiManager.Instance.Initialize();
 
-        RegisterModels();
-        RegisterViews();
+        BindModels();
+        BindViews();
     }
 
-    private void RegisterModels()
+    private void BindModels()
+    {
+        BindConfig();
+        BindBoardModel();
+    }
+
+    private void BindConfig()
     {
         boardConfig.Initialize();
-        DiManager.Instance.Register(boardConfig);
+        DiManager.Instance.Bind(boardConfig);
     }
 
-    private void RegisterViews()
+    private void BindBoardModel()
     {
-        DiManager.Instance.Register(camera);
-        DiManager.Instance.Register(assetsRepository);
-        DiManager.Instance.Register(inputView);
+        BoardFactory factory = new();
+        BoardModel model = factory.Get();
+        DiManager.Instance.Bind(model);
+    }
+
+    private void BindViews()
+    {
+        DiManager.Instance.Bind(camera);
+        DiManager.Instance.Bind(assetsRepository);
+        DiManager.Instance.Bind(inputView);
     }
 }

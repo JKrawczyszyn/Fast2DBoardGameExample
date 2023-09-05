@@ -6,6 +6,8 @@ namespace Model
     [CreateAssetMenu(fileName = "BoardConfig", menuName = "ScriptableObjects/BoardConfig")]
     public class BoardConfig : ScriptableObject
     {
+        public float blockedChance;
+
         private const string fileName = "BoardConfig";
 
         private Lazy<BoardConfigJson> config;

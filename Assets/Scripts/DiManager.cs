@@ -16,7 +16,7 @@ public class DiManager
         instances.Clear();
     }
 
-    public void Register<T>(T instance)
+    public void Bind<T>(T instance)
     {
         instances.Add(typeof(T), instance);
     }
