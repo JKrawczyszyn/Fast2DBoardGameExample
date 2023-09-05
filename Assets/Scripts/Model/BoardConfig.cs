@@ -6,6 +6,7 @@ namespace Model
     [CreateAssetMenu(fileName = "BoardConfig", menuName = "ScriptableObjects/BoardConfig")]
     public class BoardConfig : ScriptableObject
     {
+        [Range(0f, 1f)]
         public float blockedChance;
 
         private const string fileName = "BoardConfig";

@@ -17,3 +17,5 @@ MonoBehaviour:
     color1: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 1}
     color2: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
     colorBlocked: {r: 0, g: 0, b: 0, a: 1}
+  spawnerConfig:
+    prefab: {fileID: 241622185663087278, guid: 160f8c7a56afe48419f0ed8cd932b11c, type: 3}

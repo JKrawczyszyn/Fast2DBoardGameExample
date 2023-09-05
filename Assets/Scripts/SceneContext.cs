@@ -1,3 +1,4 @@
+using Controller;
 using Model;
 using UnityEngine;
 using View;
@@ -21,13 +22,13 @@ public class SceneContext : MonoBehaviour
         DiManager.Instance.Initialize();
 
         BindModels();
+        BindControllers();
         BindViews();
     }
 
     private void BindModels()
     {
         BindConfig();
-        BindBoardModel();
     }
 
     private void BindConfig()
@@ -36,11 +37,11 @@ public class SceneContext : MonoBehaviour
         DiManager.Instance.Bind(boardConfig);
     }
 
-    private void BindBoardModel()
+    private void BindControllers()
     {
         BoardFactory factory = new();
         BoardModel model = factory.Get();
-        DiManager.Instance.Bind(model);
+        DiManager.Instance.Bind(new BoardController(model));
     }
 
     private void BindViews()
@@ -48,5 +49,8 @@ public class SceneContext : MonoBehaviour
         DiManager.Instance.Bind(camera);
         DiManager.Instance.Bind(assetsRepository);
         DiManager.Instance.Bind(inputView);
+
+        CoordConverter coordConverter = new(camera, boardConfig.Width, boardConfig.Height);
+        DiManager.Instance.Bind(coordConverter);
     }
 }

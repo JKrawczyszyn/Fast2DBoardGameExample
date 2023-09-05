@@ -7,6 +7,7 @@ namespace View
     public class AssetsRepository : ScriptableObject
     {
         public FieldsConfig fieldsConfig;
+        public SpawnerConfig spawnerConfig;
     }
 
     [Serializable]
@@ -14,5 +15,11 @@ namespace View
     {
         public Field prefab;
         public Color color1, color2, colorBlocked;
+    }
+
+    [Serializable]
+    public class SpawnerConfig
+    {
+        public Spawner prefab;
     }
 }

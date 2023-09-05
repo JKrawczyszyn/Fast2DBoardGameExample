@@ -1,4 +1,5 @@
 using System;
+using UnityEngine.Assertions;
 using Random = UnityEngine.Random;
 
 namespace Model
@@ -19,21 +20,36 @@ namespace Model
 
         public BoardModel Get()
         {
-            var board = new BoardModel(boardConfig.Width, boardConfig.Height);
-
             Random.InitState(Environment.TickCount);
 
-            for (var x = 0; x < boardConfig.Width; x++)
-            {
-                for (var y = 0; y < boardConfig.Height; y++)
-                {
-                    FieldType type = Random.value <= boardConfig.blockedChance ? FieldType.Blocked : FieldType.Open;
+            var board = new BoardModel(boardConfig.Width, boardConfig.Height);
 
-                    board.SetField(x, y, type);
-                }
-            }
+            SetFields(board);
 
             return board;
+        }
+
+        private void SetFields(BoardModel board)
+        {
+            Assert.IsTrue(boardConfig.blockedChance < 1f);
+
+            while (true)
+            {
+                for (var x = 0; x < boardConfig.Width; x++)
+                {
+                    for (var y = 0; y < boardConfig.Height; y++)
+                    {
+                        FieldType type = Random.value <= boardConfig.blockedChance ? FieldType.Blocked : FieldType.Open;
+
+                        board.SetField(x, y, type);
+                    }
+                }
+
+                if (board.CountFields(FieldType.Blocked) == board.Width * board.Height)
+                    continue;
+
+                break;
+            }
         }
     }
 }
