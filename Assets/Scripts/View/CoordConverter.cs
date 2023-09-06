@@ -1,5 +1,6 @@
 using Model;
 using UnityEngine;
+using Utilities;
 
 namespace View
 {
@@ -16,7 +17,7 @@ namespace View
             this.height = height;
         }
 
-        public Vector3 BoardToWorld(BoardPosition position)
+        public Vector3 BoardToWorld(in BoardPosition position)
         {
             float x = position.X - ((width - 1) / 2f);
             float y = position.Y - ((height - 1) / 2f);

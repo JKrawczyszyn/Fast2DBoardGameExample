@@ -1,5 +1,6 @@
 using System;
 using UnityEngine.Assertions;
+using Utilities;
 using Random = UnityEngine.Random;
 
 namespace Model
@@ -41,7 +42,7 @@ namespace Model
                     {
                         FieldType type = Random.value <= boardConfig.blockedChance ? FieldType.Blocked : FieldType.Open;
 
-                        board.SetField(x, y, type);
+                        board.SetField(new BoardPosition(x, y), type);
                     }
                 }
 

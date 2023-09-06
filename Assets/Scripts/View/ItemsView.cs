@@ -1,10 +1,11 @@
 using Controller;
 using Model;
 using UnityEngine;
+using Utilities;
 
 namespace View
 {
-    public class SpawnerView : MonoBehaviour
+    public class ItemsView : MonoBehaviour
     {
         private AssetsRepository assetsRepository;
         private BoardController controller;
@@ -42,7 +43,9 @@ namespace View
 
         private void DragEnded(Vector2 position)
         {
-            BoardPosition boardPosition = coordConverter.WorldToBoard(position);
+            BoardPosition boardPosition
+                = BoardHelpers.GetClosestOpenAndEmpty(controller.Model, coordConverter, position);
+
             controller.SpawnerMove(boardPosition);
         }
 

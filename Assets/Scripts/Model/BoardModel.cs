@@ -1,36 +1,49 @@
-﻿using UnityEngine.Assertions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine.Assertions;
+using Utilities;
 
 namespace Model
 {
     public class BoardModel
     {
         private readonly FieldType[,] fields;
+        private readonly ItemType[,] items;
 
         public int Width => fields.GetLength(0);
         public int Height => fields.GetLength(1);
 
-        private BoardPosition spawnerPosition;
-
         public BoardModel(int width, int height)
         {
             fields = new FieldType[width, height];
+            items = new ItemType[width, height];
         }
 
-        public void SetField(int x, int y, FieldType type)
+        public void SetField(in BoardPosition position, FieldType type)
         {
-            Assert.IsTrue(x.Between(0, Width - 1));
-            Assert.IsTrue(y.Between(0, Height - 1));
+            Assert.IsTrue(position.X.Between(0, Width - 1));
+            Assert.IsTrue(position.Y.Between(0, Height - 1));
 
-            fields[x, y] = type;
+            fields[position.X, position.Y] = type;
         }
 
-        public FieldType GetField(BoardPosition position)
+        public FieldType GetField(in BoardPosition position)
         {
             Assert.IsTrue(position.X.Between(0, Width - 1));
             Assert.IsTrue(position.Y.Between(0, Height - 1));
 
             return fields[position.X, position.Y];
         }
+
+        public void SetSpawner(in BoardPosition position)
+        {
+            Assert.IsTrue(IsPositionOpenAndEmpty(position));
+
+            RemoveItems(ItemType.Spawner);
+            SetItem(position, ItemType.Spawner);
+        }
+
+        public BoardPosition GetSpawner() => GetItemPositions(ItemType.Spawner).FirstOrDefault();
 
         public int CountFields(FieldType type)
         {
@@ -40,7 +53,7 @@ namespace Model
             {
                 for (var y = 0; y < Height; y++)
                 {
-                    if (GetField(new BoardPosition(x, y)) == type)
+                    if (fields[x, y] == type)
                         count++;
                 }
             }
@@ -50,20 +63,52 @@ namespace Model
             return count;
         }
 
-        public void SetSpawner(BoardPosition position)
+        public bool IsPositionOpenAndEmpty(in BoardPosition position)
         {
             Assert.IsTrue(position.X.Between(0, Width - 1));
             Assert.IsTrue(position.Y.Between(0, Height - 1));
-            Assert.IsTrue(GetField(position) == FieldType.Open);
 
-            spawnerPosition = position;
+            return GetField(position) == FieldType.Open && GetItem(position) == ItemType.None;
         }
 
-        public BoardPosition GetSpawner()
+        private void RemoveItems(ItemType type)
         {
-            Assert.IsFalse(spawnerPosition == default);
+            for (var x = 0; x < Width; x++)
+            {
+                for (var y = 0; y < Height; y++)
+                {
+                    if (items[x, y] == type)
+                        items[x, y] = ItemType.None;
+                }
+            }
+        }
 
-            return spawnerPosition;
+        private void SetItem(in BoardPosition position, ItemType type)
+        {
+            Assert.IsTrue(position.X.Between(0, Width - 1));
+            Assert.IsTrue(position.Y.Between(0, Height - 1));
+
+            items[position.X, position.Y] = type;
+        }
+
+        private ItemType GetItem(in BoardPosition position)
+        {
+            Assert.IsTrue(position.X.Between(0, Width - 1));
+            Assert.IsTrue(position.Y.Between(0, Height - 1));
+
+            return items[position.X, position.Y];
+        }
+
+        public IEnumerable<BoardPosition> GetItemPositions(ItemType type)
+        {
+            for (var x = 0; x < Width; x++)
+            {
+                for (var y = 0; y < Height; y++)
+                {
+                    if (items[x, y] == type)
+                        yield return new BoardPosition(x, y);
+                }
+            }
         }
     }
 }

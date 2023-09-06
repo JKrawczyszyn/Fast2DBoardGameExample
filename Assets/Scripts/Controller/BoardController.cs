@@ -1,5 +1,7 @@
 ﻿using System;
 using Model;
+using UnityEngine.Assertions;
+using Utilities;
 
 namespace Controller
 {
@@ -7,30 +9,40 @@ namespace Controller
     {
         public event Action<BoardPosition> OnSpawnerMoved;
 
-        private readonly BoardModel model;
+        public BoardModel Model { get; }
 
-        public int Width => model.Width;
-        public int Height => model.Height;
+        public int Width => Model.Width;
+        public int Height => Model.Height;
 
         public BoardController(BoardModel model)
         {
-            this.model = model;
+            Model = model;
 
             BoardPosition middlePosition = BoardHelpers.GetMiddle(model.Width, model.Height);
-            BoardPosition validMiddlePosition = BoardHelpers.GetClosestOpen(model, middlePosition);
+            BoardPosition validMiddlePosition = BoardHelpers.GetClosestOpenAndEmpty(model, middlePosition);
             model.SetSpawner(validMiddlePosition);
         }
 
-        public FieldType GetField(BoardPosition position) => model.GetField(position);
+        public FieldType GetField(BoardPosition position) => Model.GetField(position);
 
-        public BoardPosition GetSpawner() => model.GetSpawner();
+        public BoardPosition GetSpawner()
+        {
+            BoardPosition position = Model.GetSpawner();
+
+            Assert.IsFalse(position == default);
+
+            return position;
+        }
 
         public void SpawnerMove(BoardPosition position)
         {
-            BoardPosition validPosition = BoardHelpers.GetClosestOpen(model, position);
-            model.SetSpawner(validPosition);
+            Model.SetSpawner(position);
 
-            OnSpawnerMoved?.Invoke(model.GetSpawner());
+            BoardPosition boardPosition = Model.GetSpawner();
+
+            Assert.IsFalse(boardPosition == default);
+
+            OnSpawnerMoved?.Invoke(boardPosition);
         }
     }
 }

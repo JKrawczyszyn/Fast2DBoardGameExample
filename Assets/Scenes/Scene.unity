@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 19328845}
   - component: {fileID: 19328846}
   m_Layer: 0
-  m_Name: SpawnerView
+  m_Name: ItemsView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

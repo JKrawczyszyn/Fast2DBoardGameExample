@@ -1,6 +1,7 @@
 using Controller;
 using Model;
 using UnityEngine;
+using Utilities;
 using View;
 
 public class SceneEntry : MonoBehaviour
