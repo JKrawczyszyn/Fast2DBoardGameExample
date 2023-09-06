@@ -5,7 +5,7 @@ namespace Controller
 {
     public class BoardController
     {
-        public event Action<BoardPosition> OnSpawnerChanged;
+        public event Action<BoardPosition> OnSpawnerMoved;
 
         private readonly BoardModel model;
 
@@ -25,12 +25,12 @@ namespace Controller
 
         public BoardPosition GetSpawner() => model.GetSpawner();
 
-        public void SpawnerDragged(BoardPosition position)
+        public void SpawnerMove(BoardPosition position)
         {
             BoardPosition validPosition = BoardHelpers.GetClosestOpen(model, position);
             model.SetSpawner(validPosition);
 
-            OnSpawnerChanged?.Invoke(model.GetSpawner());
+            OnSpawnerMoved?.Invoke(model.GetSpawner());
         }
     }
 }

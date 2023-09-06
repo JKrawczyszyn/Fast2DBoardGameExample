@@ -29,7 +29,7 @@ namespace View
             BoardPosition spawnerPosition = controller.GetSpawner();
             CreateSpawner(spawnerPosition);
 
-            controller.OnSpawnerChanged += SpawnerChanged;
+            controller.OnSpawnerMoved += SpawnerMoved;
         }
 
         private void CreateSpawner(BoardPosition boardPosition)
@@ -43,10 +43,10 @@ namespace View
         private void DragEnded(Vector2 position)
         {
             BoardPosition boardPosition = coordConverter.WorldToBoard(position);
-            controller.SpawnerDragged(boardPosition);
+            controller.SpawnerMove(boardPosition);
         }
 
-        private void SpawnerChanged(BoardPosition position)
+        private void SpawnerMoved(BoardPosition position)
         {
             spawner.transform.localPosition = coordConverter.BoardToWorld(position);
         }
@@ -54,7 +54,7 @@ namespace View
         private void OnDestroy()
         {
             spawner.OnDragEnded -= DragEnded;
-            controller.OnSpawnerChanged -= SpawnerChanged;
+            controller.OnSpawnerMoved -= SpawnerMoved;
         }
     }
 }

@@ -3,7 +3,7 @@ using Model;
 using UnityEngine;
 using View;
 
-public class SceneContext : MonoBehaviour
+public class SceneEntry : MonoBehaviour
 {
     [SerializeField]
     private BoardConfig boardConfig;
@@ -21,14 +21,9 @@ public class SceneContext : MonoBehaviour
     {
         DiManager.Instance.Initialize();
 
-        BindModels();
+        BindConfig();
         BindControllers();
         BindViews();
-    }
-
-    private void BindModels()
-    {
-        BindConfig();
     }
 
     private void BindConfig()
@@ -41,7 +36,8 @@ public class SceneContext : MonoBehaviour
     {
         BoardFactory factory = new();
         BoardModel model = factory.Get();
-        DiManager.Instance.Bind(new BoardController(model));
+        BoardController boardController = new(model);
+        DiManager.Instance.Bind(boardController);
     }
 
     private void BindViews()

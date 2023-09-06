@@ -21,8 +21,5 @@ public class DiManager
         instances.Add(typeof(T), instance);
     }
 
-    public T Resolve<T>()
-    {
-        return (T)instances[typeof(T)];
-    }
+    public T Resolve<T>() => (T)instances[typeof(T)];
 }
