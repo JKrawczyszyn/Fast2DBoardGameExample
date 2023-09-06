@@ -10,11 +10,16 @@ namespace Model
         private readonly FieldType[,] fields;
         private readonly ItemType[,] items;
 
-        public int Width => fields.GetLength(0);
-        public int Height => fields.GetLength(1);
+        private BoardPosition? spawnerPositionCache;
+
+        public int Width { get; }
+        public int Height { get; }
 
         public BoardModel(int width, int height)
         {
+            Width = width;
+            Height = height;
+
             fields = new FieldType[width, height];
             items = new ItemType[width, height];
         }
@@ -42,7 +47,14 @@ namespace Model
             SetItem(position, ItemType.Spawner);
         }
 
-        public BoardPosition GetSpawner() => GetItemPositions(ItemType.Spawner).FirstOrDefault();
+        public BoardPosition GetSpawner()
+        {
+            if (!spawnerPositionCache.HasValue
+                || items[spawnerPositionCache.Value.X, spawnerPositionCache.Value.Y] != ItemType.Spawner)
+                spawnerPositionCache = GetItemPositions(ItemType.Spawner).FirstOrDefault();
+
+            return spawnerPositionCache ?? default;
+        }
 
         public int CountFields(FieldType type)
         {
@@ -99,7 +111,7 @@ namespace Model
             return items[position.X, position.Y];
         }
 
-        public IEnumerable<BoardPosition> GetItemPositions(ItemType type)
+        private IEnumerable<BoardPosition> GetItemPositions(ItemType type)
         {
             for (var x = 0; x < Width; x++)
             {

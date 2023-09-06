@@ -11,31 +11,29 @@ public class SceneEntry : MonoBehaviour
     private BoardConfig boardConfig;
 
     [SerializeField]
-    private Camera camera;
+    private ViewConfig viewConfig;
 
     [SerializeField]
-    private AssetsRepository assetsRepository;
+    private Camera camera;
 
     [SerializeField]
     private InputView inputView;
 
     private void Awake()
     {
+        Application.targetFrameRate = viewConfig.targetFrameRate;
+
         DiManager.Instance.Initialize();
 
-        BindConfig();
         BindControllers();
         BindViews();
     }
 
-    private void BindConfig()
+    private void BindControllers()
     {
         boardConfig.Initialize();
         DiManager.Instance.Bind(boardConfig);
-    }
 
-    private void BindControllers()
-    {
         SpawnController spawnController = new();
         DiManager.Instance.Bind(spawnController);
 
@@ -47,8 +45,10 @@ public class SceneEntry : MonoBehaviour
 
     private void BindViews()
     {
+        DiManager.Instance.Bind(viewConfig);
+
         DiManager.Instance.Bind(camera);
-        DiManager.Instance.Bind(assetsRepository);
+
         DiManager.Instance.Bind(inputView);
 
         CoordConverter coordConverter = new(camera, boardConfig.Width, boardConfig.Height);

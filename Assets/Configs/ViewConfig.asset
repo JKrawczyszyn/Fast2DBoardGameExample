@@ -10,15 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59add72172ce4031b19075bbe3a46d78, type: 3}
-  m_Name: AssetsRepository
+  m_Name: ViewConfig
   m_EditorClassIdentifier: 
-  fieldsConfig:
+  targetFrameRate: 60
+  spawnAnimationTimeMilliseconds: 100
+  fields:
     configs:
     - type: 0
       prefab: {fileID: 4425016992711207510, guid: d06087076813d624b8c4228d968f574f, type: 3}
     - type: 1
       prefab: {fileID: 3092240800172076402, guid: 900908d9f8747d847a553689c3653c68, type: 3}
-  itemsConfig:
+  items:
     configs:
     - type: 1
       prefab: {fileID: 241622185663087278, guid: 160f8c7a56afe48419f0ed8cd932b11c, type: 3}

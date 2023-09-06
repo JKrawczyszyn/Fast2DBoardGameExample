@@ -8,7 +8,7 @@ namespace View
 {
     public class FieldsView : MonoBehaviour
     {
-        private AssetsRepository assetsRepository;
+        private ViewConfig viewConfig;
         private BoardController controller;
         private CoordConverter coordConverter;
 
@@ -19,7 +19,7 @@ namespace View
 
         private void Inject()
         {
-            assetsRepository = DiManager.Instance.Resolve<AssetsRepository>();
+            viewConfig = DiManager.Instance.Resolve<ViewConfig>();
             controller = DiManager.Instance.Resolve<BoardController>();
             coordConverter = DiManager.Instance.Resolve<CoordConverter>();
         }
@@ -47,7 +47,7 @@ namespace View
 
         private Field CreateField(FieldType type, BoardPosition boardPosition)
         {
-            Field field = Instantiate(assetsRepository.fieldsConfig.GetPrefab(type), transform);
+            Field field = Instantiate(viewConfig.fields.GetPrefab(type), transform);
             field.transform.localPosition = coordConverter.BoardToWorld(boardPosition);
 
             return field;

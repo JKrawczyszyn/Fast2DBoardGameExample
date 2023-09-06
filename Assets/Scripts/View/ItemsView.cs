@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using Controller;
 using Model;
 using UnityEngine;
@@ -10,12 +11,14 @@ namespace View
 {
     public class ItemsView : MonoBehaviour
     {
-        private AssetsRepository assetsRepository;
+        private ViewConfig viewConfig;
         private BoardController controller;
         private CoordConverter coordConverter;
 
-        private List<Item> items = new();
+        private readonly List<Item> items = new();
         private Spawner spawner;
+
+        private CancellationTokenSource cts = new();
 
         private void Awake()
         {
@@ -24,7 +27,7 @@ namespace View
 
         private void Inject()
         {
-            assetsRepository = DiManager.Instance.Resolve<AssetsRepository>();
+            viewConfig = DiManager.Instance.Resolve<ViewConfig>();
             controller = DiManager.Instance.Resolve<BoardController>();
             coordConverter = DiManager.Instance.Resolve<CoordConverter>();
         }
@@ -40,7 +43,7 @@ namespace View
 
         private void CreateSpawner(BoardPosition boardPosition)
         {
-            spawner = Instantiate(assetsRepository.itemsConfig.GetPrefab(ItemType.Spawner), transform) as Spawner;
+            spawner = Instantiate(viewConfig.items.GetPrefab(ItemType.Spawner), transform) as Spawner;
 
             Assert.IsNotNull(spawner);
 
@@ -51,8 +54,8 @@ namespace View
 
         private void DragEnded(Vector2 position)
         {
-            BoardPosition boardPosition
-                = BoardHelpers.GetClosestOpen(controller.Model, coordConverter, position, ItemType.None, ItemType.Spawner);
+            BoardPosition boardPosition = BoardHelpers.GetClosestOpen(controller.Model, coordConverter, position,
+                ItemType.None, ItemType.Spawner);
 
             controller.SpawnerMove(boardPosition);
         }
@@ -64,11 +67,15 @@ namespace View
 
         private void ItemSpawned(BoardPosition start, BoardPosition end, ItemType type)
         {
-            Item item = Instantiate(assetsRepository.itemsConfig.GetPrefab(type), transform);
+            Item item = Instantiate(viewConfig.items.GetPrefab(type), transform);
 
             Assert.IsNotNull(item);
 
-            item.transform.localPosition = coordConverter.BoardToWorld(end);
+            Vector3 worldStartPosition = coordConverter.BoardToWorld(start);
+            Vector3 worldEndPosition = coordConverter.BoardToWorld(end);
+
+            item.transform.AnimateMoveLocal(worldStartPosition, worldEndPosition,
+                viewConfig.spawnAnimationTimeMilliseconds, cts.Token).Forget();
 
             items.Add(item);
         }

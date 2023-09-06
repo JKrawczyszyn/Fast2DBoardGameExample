@@ -612,7 +612,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardConfig: {fileID: 11400000, guid: dc6bc5cfcb4a58446a6780b3e9280173, type: 2}
   camera: {fileID: 519420031}
-  assetsRepository: {fileID: 11400000, guid: 4d5fd55e42d7efc4e8bde9fcdd44fb7b, type: 2}
+  viewConfig: {fileID: 11400000, guid: 4d5fd55e42d7efc4e8bde9fcdd44fb7b, type: 2}
   inputView: {fileID: 1841791212}
 --- !u!4 &630088319
 Transform:
