@@ -1,24 +1,23 @@
-using Model;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace View
 {
     public class Field : MonoBehaviour
     {
         [SerializeField]
-        private SpriteRenderer sprite;
+        private SpriteRenderer[] sprites;
 
-        public void Initialize(AssetsRepository assetsRepository, FieldType type, int x, int y)
+        public void Initialize(int x, int y)
         {
-            if (type == FieldType.Blocked)
-            {
-                sprite.color = assetsRepository.fieldsConfig.colorBlocked;
+            Assert.IsTrue(sprites.Length.Between(1, 2));
 
+            if (sprites.Length != 2)
                 return;
-            }
 
-            sprite.color = (x + y) % 2 == 1 ? assetsRepository.fieldsConfig.color2
-                : assetsRepository.fieldsConfig.color1;
+            int index = (x + y) % 2;
+            sprites[index].gameObject.SetActive(true);
+            sprites[1 - index].gameObject.SetActive(false);
         }
     }
 }

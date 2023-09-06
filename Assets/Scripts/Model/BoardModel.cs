@@ -45,6 +45,8 @@ namespace Model
                 }
             }
 
+            Assert.IsTrue(count.Between(0, Width * Height));
+
             return count;
         }
 

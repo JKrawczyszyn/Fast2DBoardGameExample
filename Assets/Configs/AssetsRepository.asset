@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: AssetsRepository
   m_EditorClassIdentifier: 
   fieldsConfig:
-    prefab: {fileID: 5977802426674256142, guid: 24118f0b2e741d148925442b10e13dfc, type: 3}
-    color1: {r: 0.8113208, g: 0.8113208, b: 0.8113208, a: 1}
-    color2: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
-    colorBlocked: {r: 0, g: 0, b: 0, a: 1}
+    configs:
+    - type: 0
+      prefab: {fileID: 4425016992711207510, guid: d06087076813d624b8c4228d968f574f, type: 3}
+    - type: 1
+      prefab: {fileID: 3092240800172076402, guid: 900908d9f8747d847a553689c3653c68, type: 3}
   spawnerConfig:
     prefab: {fileID: 241622185663087278, guid: 160f8c7a56afe48419f0ed8cd932b11c, type: 3}

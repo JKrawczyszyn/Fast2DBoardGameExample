@@ -35,17 +35,17 @@ namespace View
                 {
                     BoardPosition boardPosition = new(x, y);
 
-                    Field field = CreateField(boardPosition);
-
                     FieldType type = controller.GetField(boardPosition);
-                    field.Initialize(assetsRepository, type, x, y);
+                    Field field = CreateField(type, boardPosition);
+
+                    field.Initialize(x, y);
                 }
             }
         }
 
-        private Field CreateField(BoardPosition boardPosition)
+        private Field CreateField(FieldType type, BoardPosition boardPosition)
         {
-            Field field = Instantiate(assetsRepository.fieldsConfig.prefab, transform);
+            Field field = Instantiate(assetsRepository.fieldsConfig.GetPrefab(type), transform);
             field.transform.localPosition = coordConverter.BoardToWorld(boardPosition);
 
             return field;

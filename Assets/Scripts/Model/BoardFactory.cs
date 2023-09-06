@@ -22,7 +22,7 @@ namespace Model
         {
             Random.InitState(Environment.TickCount);
 
-            var board = new BoardModel(boardConfig.Width, boardConfig.Height);
+            BoardModel board = new(boardConfig.Width, boardConfig.Height);
 
             SetFields(board);
 

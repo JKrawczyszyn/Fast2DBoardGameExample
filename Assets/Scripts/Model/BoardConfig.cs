@@ -29,7 +29,7 @@ namespace Model
             return JsonUtility.FromJson<BoardConfigJson>(json);
         }
 
-        internal class BoardConfigJson
+        private class BoardConfigJson
         {
             public int Width;
             public int Height;
