@@ -18,5 +18,13 @@ MonoBehaviour:
       prefab: {fileID: 4425016992711207510, guid: d06087076813d624b8c4228d968f574f, type: 3}
     - type: 1
       prefab: {fileID: 3092240800172076402, guid: 900908d9f8747d847a553689c3653c68, type: 3}
-  spawnerConfig:
-    prefab: {fileID: 241622185663087278, guid: 160f8c7a56afe48419f0ed8cd932b11c, type: 3}
+  itemsConfig:
+    configs:
+    - type: 1
+      prefab: {fileID: 241622185663087278, guid: 160f8c7a56afe48419f0ed8cd932b11c, type: 3}
+    - type: 2
+      prefab: {fileID: 161890733912442657, guid: f487c6a4caab74849a9af88c9a75fb0b, type: 3}
+    - type: 3
+      prefab: {fileID: 161890733912442657, guid: 56dee76b9f98d2c4f9193ff37a27d2d7, type: 3}
+    - type: 4
+      prefab: {fileID: 161890733912442657, guid: 07cddf53ac9843247a893e13ae1101cc, type: 3}

@@ -2,6 +2,7 @@ using Controller;
 using Model;
 using UnityEngine;
 using Utilities;
+using View.Assets;
 
 namespace View
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Model;
 
 namespace Utilities
 {
@@ -27,5 +28,7 @@ namespace Utilities
 
             return value;
         }
+
+        public static BoardPosition RotateClockwise(this BoardPosition position) => new(position.Y, -position.X);
     }
 }

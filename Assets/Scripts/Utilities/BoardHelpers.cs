@@ -8,7 +8,8 @@ namespace Utilities
     {
         public static BoardPosition GetMiddle(int width, int height) => new(width / 2, height / 2);
 
-        public static BoardPosition GetClosestOpenAndEmpty(BoardModel model, BoardPosition position)
+        public static BoardPosition GetClosestOpen(BoardModel model, BoardPosition position,
+            params ItemType[] types)
         {
             BoardPosition closest = default;
             var closestDistance = int.MaxValue;
@@ -19,7 +20,7 @@ namespace Utilities
                 {
                     BoardPosition current = new(x, y);
 
-                    if (!model.IsPositionOpenAndEmpty(current))
+                    if (!model.IsPositionOpen(current, types))
                         continue;
 
                     int distance = GetDistance(position, current);
@@ -43,8 +44,8 @@ namespace Utilities
             return x + y;
         }
 
-        public static BoardPosition GetClosestOpenAndEmpty(BoardModel model, CoordConverter coordConverter,
-            Vector2 position)
+        public static BoardPosition GetClosestOpen(BoardModel model, CoordConverter coordConverter,
+            Vector2 position, params ItemType[] types)
         {
             BoardPosition closest = default;
             var closestDistance = float.MaxValue;
@@ -55,7 +56,7 @@ namespace Utilities
                 {
                     BoardPosition current = new(x, y);
 
-                    if (!model.IsPositionOpenAndEmpty(current))
+                    if (!model.IsPositionOpen(current, types))
                         continue;
 
                     Vector3 worldPosition = coordConverter.BoardToWorld(current);

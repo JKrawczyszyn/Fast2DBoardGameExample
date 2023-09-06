@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 namespace View
 {
     [RequireComponent(typeof(Collider2D))]
-    public class Spawner : MonoBehaviour, IDragHandler, IEndDragHandler
+    public class Spawner : Item, IDragHandler, IEndDragHandler
     {
         public event System.Action<Vector2> OnDragEnded;
 

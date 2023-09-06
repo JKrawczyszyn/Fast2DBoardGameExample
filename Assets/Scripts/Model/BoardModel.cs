@@ -21,23 +21,22 @@ namespace Model
 
         public void SetField(in BoardPosition position, FieldType type)
         {
-            Assert.IsTrue(position.X.Between(0, Width - 1));
-            Assert.IsTrue(position.Y.Between(0, Height - 1));
+            Assert.IsTrue(IsPositionValid(position));
 
             fields[position.X, position.Y] = type;
         }
 
         public FieldType GetField(in BoardPosition position)
         {
-            Assert.IsTrue(position.X.Between(0, Width - 1));
-            Assert.IsTrue(position.Y.Between(0, Height - 1));
+            Assert.IsTrue(IsPositionValid(position));
 
             return fields[position.X, position.Y];
         }
 
         public void SetSpawner(in BoardPosition position)
         {
-            Assert.IsTrue(IsPositionOpenAndEmpty(position));
+            Assert.IsTrue(IsPositionValid(position));
+            Assert.IsTrue(IsPositionOpen(position, ItemType.None, ItemType.Spawner));
 
             RemoveItems(ItemType.Spawner);
             SetItem(position, ItemType.Spawner);
@@ -63,12 +62,14 @@ namespace Model
             return count;
         }
 
-        public bool IsPositionOpenAndEmpty(in BoardPosition position)
+        public bool IsPositionOpen(in BoardPosition position, params ItemType[] types)
         {
-            Assert.IsTrue(position.X.Between(0, Width - 1));
-            Assert.IsTrue(position.Y.Between(0, Height - 1));
+            Assert.IsTrue(IsPositionValid(position));
 
-            return GetField(position) == FieldType.Open && GetItem(position) == ItemType.None;
+            if (types.Length == 0)
+                types = new[] { ItemType.None };
+
+            return GetField(position) == FieldType.Open && types.Contains(GetItem(position));
         }
 
         private void RemoveItems(ItemType type)
@@ -83,18 +84,17 @@ namespace Model
             }
         }
 
-        private void SetItem(in BoardPosition position, ItemType type)
+        public void SetItem(in BoardPosition position, ItemType type)
         {
-            Assert.IsTrue(position.X.Between(0, Width - 1));
-            Assert.IsTrue(position.Y.Between(0, Height - 1));
+            Assert.IsTrue(IsPositionValid(position));
+            Assert.IsTrue(IsPositionOpen(position));
 
             items[position.X, position.Y] = type;
         }
 
         private ItemType GetItem(in BoardPosition position)
         {
-            Assert.IsTrue(position.X.Between(0, Width - 1));
-            Assert.IsTrue(position.Y.Between(0, Height - 1));
+            Assert.IsTrue(IsPositionValid(position));
 
             return items[position.X, position.Y];
         }
@@ -110,5 +110,8 @@ namespace Model
                 }
             }
         }
+
+        public bool IsPositionValid(BoardPosition position) =>
+            position.X.Between(0, Width - 1) && position.Y.Between(0, Height - 1);
     }
 }

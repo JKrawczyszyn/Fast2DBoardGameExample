@@ -1,3 +1,4 @@
+using Controller;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities;
@@ -9,7 +10,11 @@ namespace View
         [SerializeField]
         private Slider scaleSlider;
 
+        [SerializeField]
+        private PressButton spawnButton;
+
         private InputView inputView;
+        private BoardController boardController;
 
         private void Awake()
         {
@@ -19,11 +24,13 @@ namespace View
         private void Inject()
         {
             inputView = DiManager.Instance.Resolve<InputView>();
+            boardController = DiManager.Instance.Resolve<BoardController>();
         }
 
         private void Start()
         {
             InitializeSlider();
+            InitializeSpawnButton();
         }
 
         private void InitializeSlider()
@@ -42,9 +49,21 @@ namespace View
             inputView.SetScale(value);
         }
 
+        private void InitializeSpawnButton()
+        {
+            spawnButton.OnPress += boardController.ResetSpawner;
+        }
+
+        private void Update()
+        {
+            if (spawnButton.Pressed)
+                boardController.SpawnItem();
+        }
+
         private void OnDestroy()
         {
             scaleSlider.onValueChanged.RemoveListener(ScaleSliderValueChanged);
+            spawnButton.OnPress -= boardController.ResetSpawner;
         }
     }
 }

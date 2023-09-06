@@ -3,6 +3,7 @@ using Model;
 using UnityEngine;
 using Utilities;
 using View;
+using View.Assets;
 
 public class SceneEntry : MonoBehaviour
 {
@@ -35,6 +36,9 @@ public class SceneEntry : MonoBehaviour
 
     private void BindControllers()
     {
+        SpawnController spawnController = new();
+        DiManager.Instance.Bind(spawnController);
+
         BoardFactory factory = new();
         BoardModel model = factory.Get();
         BoardController boardController = new(model);

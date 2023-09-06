@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using Controller;
 using Model;
 using UnityEngine;
+using UnityEngine.Assertions;
 using Utilities;
+using View.Assets;
 
 namespace View
 {
@@ -11,6 +14,7 @@ namespace View
         private BoardController controller;
         private CoordConverter coordConverter;
 
+        private List<Item> items = new();
         private Spawner spawner;
 
         private void Awake()
@@ -31,11 +35,15 @@ namespace View
             CreateSpawner(spawnerPosition);
 
             controller.OnSpawnerMoved += SpawnerMoved;
+            controller.OnItemSpawned += ItemSpawned;
         }
 
         private void CreateSpawner(BoardPosition boardPosition)
         {
-            spawner = Instantiate(assetsRepository.spawnerConfig.prefab, transform);
+            spawner = Instantiate(assetsRepository.itemsConfig.GetPrefab(ItemType.Spawner), transform) as Spawner;
+
+            Assert.IsNotNull(spawner);
+
             spawner.transform.localPosition = coordConverter.BoardToWorld(boardPosition);
             spawner.Initialize(coordConverter);
             spawner.OnDragEnded += DragEnded;
@@ -44,7 +52,7 @@ namespace View
         private void DragEnded(Vector2 position)
         {
             BoardPosition boardPosition
-                = BoardHelpers.GetClosestOpenAndEmpty(controller.Model, coordConverter, position);
+                = BoardHelpers.GetClosestOpen(controller.Model, coordConverter, position, ItemType.None, ItemType.Spawner);
 
             controller.SpawnerMove(boardPosition);
         }
@@ -54,10 +62,22 @@ namespace View
             spawner.transform.localPosition = coordConverter.BoardToWorld(position);
         }
 
+        private void ItemSpawned(BoardPosition start, BoardPosition end, ItemType type)
+        {
+            Item item = Instantiate(assetsRepository.itemsConfig.GetPrefab(type), transform);
+
+            Assert.IsNotNull(item);
+
+            item.transform.localPosition = coordConverter.BoardToWorld(end);
+
+            items.Add(item);
+        }
+
         private void OnDestroy()
         {
             spawner.OnDragEnded -= DragEnded;
             controller.OnSpawnerMoved -= SpawnerMoved;
+            controller.OnItemSpawned -= ItemSpawned;
         }
     }
 }
