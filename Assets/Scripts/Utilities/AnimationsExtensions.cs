@@ -19,10 +19,10 @@ namespace Utilities
                 float fraction = (Time.time - startTime) / timeSeconds;
                 transform.localPosition = Vector3.Lerp(start, end, fraction);
 
-                if (ct.IsCancellationRequested)
-                    break;
-
                 await Task.Yield();
+
+                if (ct.IsCancellationRequested)
+                    return;
             }
 
             transform.localPosition = end;

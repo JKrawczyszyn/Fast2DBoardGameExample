@@ -13,6 +13,9 @@ namespace View
         [SerializeField]
         private PressButton spawnButton;
 
+        [SerializeField]
+        private Button clearButton;
+
         private InputView inputView;
         private BoardController boardController;
 
@@ -30,7 +33,7 @@ namespace View
         private void Start()
         {
             InitializeSlider();
-            InitializeSpawnButton();
+            InitializeButtons();
         }
 
         private void InitializeSlider()
@@ -38,20 +41,15 @@ namespace View
             scaleSlider.minValue = inputView.ScaleMin;
             scaleSlider.maxValue = inputView.ScaleMax;
             scaleSlider.value = inputView.ScaleMax;
+            scaleSlider.onValueChanged.AddListener(inputView.SetScale);
 
-            scaleSlider.onValueChanged.AddListener(ScaleSliderValueChanged);
-
-            ScaleSliderValueChanged(inputView.ScaleMax);
+            inputView.SetScale(inputView.ScaleMax);
         }
 
-        private void ScaleSliderValueChanged(float value)
-        {
-            inputView.SetScale(value);
-        }
-
-        private void InitializeSpawnButton()
+        private void InitializeButtons()
         {
             spawnButton.OnPress += boardController.ResetSpawner;
+            clearButton.onClick.AddListener(boardController.ClearAdjacent);
         }
 
         private void Update()
@@ -62,8 +60,9 @@ namespace View
 
         private void OnDestroy()
         {
-            scaleSlider.onValueChanged.RemoveListener(ScaleSliderValueChanged);
+            scaleSlider.onValueChanged.RemoveListener(inputView.SetScale);
             spawnButton.OnPress -= boardController.ResetSpawner;
+            clearButton.onClick.RemoveListener(boardController.ClearAdjacent);
         }
     }
 }

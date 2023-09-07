@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Model
 {
@@ -26,7 +27,12 @@ namespace Model
             TextAsset asset = Resources.Load<TextAsset>(fileName);
             string json = asset.text;
 
-            return JsonUtility.FromJson<BoardConfigJson>(json);
+            BoardConfigJson configJson = JsonUtility.FromJson<BoardConfigJson>(json);
+
+            Assert.IsTrue(configJson.Width >= 2, "Board width must be at least 2.");
+            Assert.IsTrue(configJson.Height >= 2, "Board height must be at least 2.");
+
+            return configJson;
         }
 
         private class BoardConfigJson

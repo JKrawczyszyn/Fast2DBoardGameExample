@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Model;
 using UnityEngine;
 using View;
@@ -71,6 +73,58 @@ namespace Utilities
             }
 
             return closest;
+        }
+
+        public static HashSet<BoardPosition> GetAdjacentPositions(BoardModel model)
+        {
+            HashSet<BoardPosition> positions = new();
+
+            for (var x = 0; x < model.Width; x++)
+            {
+                for (var y = 0; y < model.Height; y++)
+                {
+                    BoardPosition position = new(x, y);
+
+                    if (model.IsPositionBlocked(position))
+                        continue;
+
+                    ItemType type = model.GetItem(position);
+
+                    if (type == ItemType.None)
+                        continue;
+
+                    var adjacent = false;
+
+                    if (x < model.Width - 1)
+                    {
+                        BoardPosition positionRight = new(x + 1, y);
+
+                        if (model.GetItem(positionRight) == type)
+                        {
+                            positions.Add(positionRight);
+
+                            adjacent = true;
+                        }
+                    }
+
+                    if (y < model.Height - 1)
+                    {
+                        BoardPosition positionUp = new(x, y + 1);
+
+                        if (model.GetItem(positionUp) == type)
+                        {
+                            positions.Add(positionUp);
+
+                            adjacent = true;
+                        }
+                    }
+
+                    if (adjacent)
+                        positions.Add(position);
+                }
+            }
+
+            return positions;
         }
     }
 }

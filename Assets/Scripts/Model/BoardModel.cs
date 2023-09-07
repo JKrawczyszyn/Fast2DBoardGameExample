@@ -76,13 +76,13 @@ namespace Model
 
         public bool IsPositionOpen(in BoardPosition position, params ItemType[] types)
         {
-            Assert.IsTrue(IsPositionValid(position));
-
             if (types.Length == 0)
                 types = new[] { ItemType.None };
 
             return GetField(position) == FieldType.Open && types.Contains(GetItem(position));
         }
+
+        public bool IsPositionBlocked(in BoardPosition position) => GetField(position) == FieldType.Blocked;
 
         private void RemoveItems(ItemType type)
         {
@@ -96,6 +96,13 @@ namespace Model
             }
         }
 
+        public void RemoveItem(in BoardPosition position)
+        {
+            Assert.IsTrue(IsPositionValid(position));
+
+            items[position.X, position.Y] = ItemType.None;
+        }
+
         public void SetItem(in BoardPosition position, ItemType type)
         {
             Assert.IsTrue(IsPositionValid(position));
@@ -104,11 +111,27 @@ namespace Model
             items[position.X, position.Y] = type;
         }
 
-        private ItemType GetItem(in BoardPosition position)
+        public ItemType GetItem(in BoardPosition position)
         {
             Assert.IsTrue(IsPositionValid(position));
 
             return items[position.X, position.Y];
+        }
+
+        public IEnumerable<(BoardPosition position, ItemType type)> GetItems()
+        {
+            for (var x = 0; x < Width; x++)
+            {
+                for (var y = 0; y < Height; y++)
+                {
+                    ItemType type = items[x, y];
+
+                    if (type == ItemType.None)
+                        continue;
+
+                    yield return (new BoardPosition(x, y), type);
+                }
+            }
         }
 
         private IEnumerable<BoardPosition> GetItemPositions(ItemType type)
@@ -123,7 +146,7 @@ namespace Model
             }
         }
 
-        public bool IsPositionValid(BoardPosition position) =>
+        public bool IsPositionValid(in BoardPosition position) =>
             position.X.Between(0, Width - 1) && position.Y.Between(0, Height - 1);
     }
 }

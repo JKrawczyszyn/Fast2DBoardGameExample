@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Model;
 using UnityEngine.Assertions;
 using Utilities;
@@ -10,6 +12,7 @@ namespace Controller
     {
         public event Action<BoardPosition> OnSpawnerMoved;
         public event Action<BoardPosition, BoardPosition, ItemType> OnItemSpawned;
+        public event Action<IEnumerable<(BoardPosition position, ItemType type)>> OnRefreshItems;
 
         private readonly SpawnController spawnController;
 
@@ -77,6 +80,15 @@ namespace Controller
             ItemType[] types = { ItemType.Item1, ItemType.Item2, ItemType.Item3 };
 
             return types[Random.Range(0, types.Length)];
+        }
+
+        public void ClearAdjacent()
+        {
+            var toRemove = BoardHelpers.GetAdjacentPositions(Model);
+            foreach (BoardPosition position in toRemove)
+                Model.RemoveItem(position);
+
+            OnRefreshItems?.Invoke(Model.GetItems());
         }
     }
 }
