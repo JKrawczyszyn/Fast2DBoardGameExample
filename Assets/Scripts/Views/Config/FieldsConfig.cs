@@ -21,13 +21,13 @@ namespace Views.Config
         {
             cache ??= configs.ToDictionary(c => ((int)c.type, c.alternate), c => c.sprite);
 
-            bool success = cache.TryGetValue(((int)type, alternate), out Sprite field);
+            bool success = cache.TryGetValue(((int)type, alternate), out Sprite sprite);
             if (!success)
-                success = cache.TryGetValue(((int)type, false), out field);
+                success = cache.TryGetValue(((int)type, false), out sprite);
 
             Assert.IsTrue(success, $"Sprite for field type '{type}' not found.");
 
-            return field;
+            return sprite;
         }
 
         [Serializable]

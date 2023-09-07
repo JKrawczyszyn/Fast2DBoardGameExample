@@ -25,14 +25,6 @@ namespace Views
             return new Vector3(x, y, 0f);
         }
 
-        public BoardPosition WorldToBoard(Vector2 position)
-        {
-            float x = position.x + ((width - 1) / 2f);
-            float y = position.y + ((height - 1) / 2f);
-
-            return new BoardPosition(Mathf.RoundToInt(x), Mathf.RoundToInt(y));
-        }
-
         public void MoveByScreenDelta(Transform transform, Vector2 delta)
         {
             Vector3 screenPosition = camera.WorldToScreenPoint(transform.position);

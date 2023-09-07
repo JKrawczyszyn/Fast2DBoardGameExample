@@ -62,31 +62,8 @@ namespace Controllers
                     if (type == ItemType.None)
                         continue;
 
-                    var adjacent = false;
-
-                    if (x < model.Width - 1)
-                    {
-                        BoardPosition positionRight = new(x + 1, y);
-
-                        if (model.GetItem(positionRight) == type)
-                        {
-                            positions.Add(positionRight);
-
-                            adjacent = true;
-                        }
-                    }
-
-                    if (y < model.Height - 1)
-                    {
-                        BoardPosition positionUp = new(x, y + 1);
-
-                        if (model.GetItem(positionUp) == type)
-                        {
-                            positions.Add(positionUp);
-
-                            adjacent = true;
-                        }
-                    }
+                    bool adjacent = x < model.Width - 1 && Find(model, x + 1, y, type, ref positions);
+                    adjacent = adjacent || (y < model.Height - 1 && Find(model, x, y + 1, type, ref positions));
 
                     if (adjacent)
                         positions.Add(position);
@@ -94,6 +71,18 @@ namespace Controllers
             }
 
             return positions;
+        }
+
+        private static bool Find(BoardModel model, int x, int y, ItemType type, ref HashSet<BoardPosition> positions)
+        {
+            BoardPosition position = new(x, y);
+
+            if (model.GetItem(position) != type)
+                return false;
+
+            positions.Add(position);
+
+            return true;
         }
     }
 }
