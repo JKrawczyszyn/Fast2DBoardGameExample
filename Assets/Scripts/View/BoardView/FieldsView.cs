@@ -12,6 +12,8 @@ namespace View
         private BoardController controller;
         private CoordConverter coordConverter;
 
+        private ItemsFactory factory;
+
         private void Awake()
         {
             Inject();
@@ -38,16 +40,20 @@ namespace View
                     BoardPosition boardPosition = new(x, y);
 
                     FieldType type = controller.GetField(boardPosition);
-                    Field field = CreateField(type, boardPosition);
 
-                    field.Initialize(x, y);
+                    Field field = CreateField(boardPosition);
+
+                    bool alternate = (x + y) % 2 == 1;
+                    Sprite sprite = viewConfig.fields.GetSprite(type, alternate);
+
+                    field.Initialize(sprite);
                 }
             }
         }
 
-        private Field CreateField(FieldType type, BoardPosition boardPosition)
+        private Field CreateField(BoardPosition boardPosition)
         {
-            Field field = Instantiate(viewConfig.fields.GetPrefab(type), transform);
+            Field field = Instantiate(viewConfig.fields.prefab, transform);
             field.transform.localPosition = coordConverter.BoardToWorld(boardPosition);
 
             return field;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Model;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace View.Config
@@ -9,17 +10,22 @@ namespace View.Config
     [Serializable]
     public class FieldsConfig
     {
+        public bool optimized;
+        public Field prefab;
+        public Vector2Int tileSize;
         public FieldConfig[] configs;
 
-        private Dictionary<int, Field> cache;
+        private Dictionary<(int, bool), Sprite> cache;
 
-        public Field GetPrefab(FieldType type)
+        public Sprite GetSprite(FieldType type, bool alternate = false)
         {
-            cache ??= configs.ToDictionary(c => (int)c.type, c => c.prefab);
+            cache ??= configs.ToDictionary(c => ((int)c.type, c.alternate), c => c.sprite);
 
-            bool success = cache.TryGetValue((int)type, out Field field);
+            bool success = cache.TryGetValue(((int)type, alternate), out Sprite field);
+            if (!success)
+                success = cache.TryGetValue(((int)type, false), out field);
 
-            Assert.IsTrue(success, $"Prefab for field type '{type}' not found.");
+            Assert.IsTrue(success, $"Sprite for field type '{type}' not found.");
 
             return field;
         }
@@ -28,7 +34,8 @@ namespace View.Config
         public class FieldConfig
         {
             public FieldType type;
-            public Field prefab;
+            public bool alternate;
+            public Sprite sprite;
         }
     }
 }

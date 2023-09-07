@@ -6,7 +6,8 @@ namespace View
     public class Item : MonoBehaviour
     {
         [SerializeField]
-        private SpriteRenderer sprite;
+        private SpriteRenderer spriteRenderer;
+
         public ItemType Type { get; private set; }
 
         public void Initialize(ItemType type)
@@ -16,7 +17,7 @@ namespace View
 
         public void SetOrder(int order)
         {
-            sprite.sortingOrder = order;
+            spriteRenderer.sortingOrder = order;
         }
     }
 }

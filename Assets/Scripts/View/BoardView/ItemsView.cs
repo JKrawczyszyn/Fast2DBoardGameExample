@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Controller;
 using Model;
 using UnityEngine;
-using UnityEngine.Assertions;
 using Utilities;
 using View.Config;
 
@@ -15,12 +14,11 @@ namespace View
         private ViewConfig viewConfig;
         private BoardController controller;
         private CoordConverter coordConverter;
+        private ItemsFactory itemsFactory;
 
         private readonly List<Item> items = new();
 
         private CancellationTokenSource animationsCts = new();
-
-        private ItemsPooler pooler;
 
         private void Awake()
         {
@@ -32,19 +30,20 @@ namespace View
             viewConfig = DiManager.Instance.Resolve<ViewConfig>();
             controller = DiManager.Instance.Resolve<BoardController>();
             coordConverter = DiManager.Instance.Resolve<CoordConverter>();
+            itemsFactory = DiManager.Instance.Resolve<ItemsFactory>();
         }
 
         private void Start()
         {
-            pooler = new ItemsPooler(transform);
-
             controller.OnItemSpawned += ItemSpawned;
             controller.OnRefreshItems += RefreshItems;
         }
 
         private void ItemSpawned(BoardPosition start, BoardPosition end, ItemType type)
         {
-            Item item = CreateItem(type);
+            Item item = itemsFactory.Create(type);
+
+            items.Add(item);
 
             AnimateMove(item, start, end).Forget();
         }
@@ -80,29 +79,18 @@ namespace View
         {
             foreach ((BoardPosition position, ItemType type) in currentItems)
             {
-                Item item = CreateItem(type);
+                Item item = itemsFactory.Create(type);
 
                 item.transform.localPosition = coordConverter.BoardToWorld(position);
+
+                items.Add(item);
             }
-        }
-
-        private Item CreateItem(ItemType type)
-        {
-            Item item = pooler.Get(type);
-
-            Assert.IsNotNull(item);
-
-            item.Initialize(type);
-
-            items.Add(item);
-
-            return item;
         }
 
         private void RemoveItems()
         {
             foreach (Item item in items)
-                pooler.Release(item);
+                itemsFactory.Destroy(item);
 
             items.Clear();
         }

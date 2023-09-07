@@ -3,15 +3,14 @@ using Model;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Utilities;
-using View.Config;
 
 namespace View
 {
     public class SpawnerView : MonoBehaviour
     {
-        private ViewConfig viewConfig;
         private BoardController controller;
         private CoordConverter coordConverter;
+        private ItemsFactory itemsFactory;
 
         private Spawner spawner;
 
@@ -22,9 +21,9 @@ namespace View
 
         private void Inject()
         {
-            viewConfig = DiManager.Instance.Resolve<ViewConfig>();
             controller = DiManager.Instance.Resolve<BoardController>();
             coordConverter = DiManager.Instance.Resolve<CoordConverter>();
+            itemsFactory = DiManager.Instance.Resolve<ItemsFactory>();
         }
 
         private void Start()
@@ -42,25 +41,16 @@ namespace View
 
         private void CreateSpawner(BoardPosition boardPosition)
         {
-            Item item = CreateItem(boardPosition, ItemType.Spawner);
+            Item item = itemsFactory.Create(ItemType.Spawner);
 
             spawner = item as Spawner;
 
             Assert.IsNotNull(spawner);
 
+            spawner.transform.localPosition = coordConverter.BoardToWorld(boardPosition);
+
             spawner.Initialize(coordConverter);
             spawner.OnDragEnded += DragEnded;
-        }
-
-        private Item CreateItem(BoardPosition position, ItemType type)
-        {
-            Item item = Instantiate(viewConfig.items.GetPrefab(type), transform);
-
-            Assert.IsNotNull(item);
-
-            item.transform.localPosition = coordConverter.BoardToWorld(position);
-
-            return item;
         }
 
         private void DragEnded(Vector2 position)

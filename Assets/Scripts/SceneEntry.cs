@@ -19,6 +19,15 @@ public class SceneEntry : MonoBehaviour
     [SerializeField]
     private InputView inputView;
 
+    [SerializeField]
+    private FieldsView fieldsView;
+
+    [SerializeField]
+    private OptimizedFieldsView optimizedFieldsView;
+
+    [SerializeField]
+    private Transform itemsParent;
+
     private void Awake()
     {
         Application.targetFrameRate = viewConfig.targetFrameRate;
@@ -53,5 +62,12 @@ public class SceneEntry : MonoBehaviour
 
         CoordConverter coordConverter = new(camera, boardConfig.Width, boardConfig.Height);
         DiManager.Instance.Bind(coordConverter);
+
+        fieldsView.gameObject.SetActive(!viewConfig.fields.optimized);
+        optimizedFieldsView.gameObject.SetActive(viewConfig.fields.optimized);
+
+        DiManager.Instance.Bind(new ItemsPooler(itemsParent));
+
+        DiManager.Instance.Bind(new ItemsFactory());
     }
 }
