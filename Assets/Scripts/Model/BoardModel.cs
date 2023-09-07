@@ -118,7 +118,7 @@ namespace Model
             return items[position.X, position.Y];
         }
 
-        public IEnumerable<(BoardPosition position, ItemType type)> GetItems()
+        public IEnumerable<(BoardPosition position, ItemType type)> GetItems(ItemType[] itemTypes)
         {
             for (var x = 0; x < Width; x++)
             {
@@ -126,7 +126,7 @@ namespace Model
                 {
                     ItemType type = items[x, y];
 
-                    if (type == ItemType.None)
+                    if (type == ItemType.None || !itemTypes.Contains(type))
                         continue;
 
                     yield return (new BoardPosition(x, y), type);

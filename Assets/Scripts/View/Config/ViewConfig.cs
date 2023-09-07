@@ -1,12 +1,12 @@
 using UnityEngine;
 
-namespace View.Assets
+namespace View.Config
 {
     [CreateAssetMenu(fileName = "ViewConfig", menuName = "ScriptableObjects/ViewConfig")]
     public class ViewConfig : ScriptableObject
     {
         public int targetFrameRate;
-        public int spawnAnimationTimeMilliseconds;
+        public float spawnAnimationTime;
         public FieldsConfig fields;
         public ItemsConfig items;
     }

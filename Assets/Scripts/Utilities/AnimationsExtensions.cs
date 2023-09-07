@@ -7,10 +7,8 @@ namespace Utilities
     public static class AnimationsExtensions
     {
         public static async Task AnimateMoveLocal(this Transform transform, Vector3 start, Vector3 end,
-            int timeMilliseconds, CancellationToken ct)
+            float timeSeconds, CancellationToken ct)
         {
-            float timeSeconds = timeMilliseconds / 1000f;
-
             float startTime = Time.time;
             float endTime = startTime + timeSeconds;
 

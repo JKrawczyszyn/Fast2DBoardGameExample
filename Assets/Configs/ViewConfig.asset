@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ViewConfig
   m_EditorClassIdentifier: 
   targetFrameRate: 60
-  spawnAnimationTimeMilliseconds: 100
+  spawnAnimationTime: 0.1
   fields:
     configs:
     - type: 0

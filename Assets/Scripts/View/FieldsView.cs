@@ -2,7 +2,7 @@ using Controller;
 using Model;
 using UnityEngine;
 using Utilities;
-using View.Assets;
+using View.Config;
 
 namespace View
 {

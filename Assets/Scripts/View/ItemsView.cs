@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Controller;
 using Model;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Utilities;
-using View.Assets;
+using View.Config;
 
 namespace View
 {
@@ -16,9 +17,10 @@ namespace View
         private CoordConverter coordConverter;
 
         private readonly List<Item> items = new();
-        private Spawner spawner;
 
         private CancellationTokenSource animationsCts = new();
+
+        private ItemsPooler pooler;
 
         private void Awake()
         {
@@ -34,47 +36,30 @@ namespace View
 
         private void Start()
         {
-            BoardPosition spawnerPosition = controller.GetSpawner();
-            CreateSpawner(spawnerPosition);
+            pooler = new ItemsPooler(transform);
 
-            controller.OnSpawnerMoved += SpawnerMoved;
             controller.OnItemSpawned += ItemSpawned;
             controller.OnRefreshItems += RefreshItems;
         }
 
-        private void CreateSpawner(BoardPosition boardPosition)
-        {
-            Item item = CreateItem(boardPosition, ItemType.Spawner);
-
-            SetSpawner(item);
-        }
-
-        private void DragEnded(Vector2 position)
-        {
-            BoardPosition boardPosition = BoardHelpers.GetClosestOpen(controller.Model, coordConverter, position,
-                ItemType.None, ItemType.Spawner);
-
-            controller.SpawnerMove(boardPosition);
-        }
-
-        private void SpawnerMoved(BoardPosition position)
-        {
-            spawner.transform.localPosition = coordConverter.BoardToWorld(position);
-        }
-
         private void ItemSpawned(BoardPosition start, BoardPosition end, ItemType type)
         {
-            Item item = Instantiate(viewConfig.items.GetPrefab(type), transform);
+            Item item = CreateItem(type);
 
-            Assert.IsNotNull(item);
+            AnimateMove(item, start, end).Forget();
+        }
 
+        private async Task AnimateMove(Item item, BoardPosition start, BoardPosition end)
+        {
             Vector3 worldStartPosition = coordConverter.BoardToWorld(start);
             Vector3 worldEndPosition = coordConverter.BoardToWorld(end);
 
-            item.transform.AnimateMoveLocal(worldStartPosition, worldEndPosition,
-                viewConfig.spawnAnimationTimeMilliseconds, animationsCts.Token).Forget();
+            item.SetOrder(1);
 
-            items.Add(item);
+            await item.transform.AnimateMoveLocal(worldStartPosition, worldEndPosition,
+                viewConfig.spawnAnimationTime, animationsCts.Token);
+
+            item.SetOrder(0);
         }
 
         private void RefreshItems(IEnumerable<(BoardPosition position, ItemType type)> currentItems)
@@ -91,62 +76,41 @@ namespace View
             animationsCts = new CancellationTokenSource();
         }
 
-        private void RemoveItems()
-        {
-            foreach (Item item in items)
-                Destroy(item.gameObject);
-
-            items.Clear();
-
-            UnsetSpawner();
-        }
-
         private void CreateItems(IEnumerable<(BoardPosition position, ItemType type)> currentItems)
         {
             foreach ((BoardPosition position, ItemType type) in currentItems)
             {
-                Item item = CreateItem(position, type);
+                Item item = CreateItem(type);
 
-                if (type == ItemType.Spawner)
-                    SetSpawner(item);
+                item.transform.localPosition = coordConverter.BoardToWorld(position);
             }
         }
 
-        private Item CreateItem(BoardPosition position, ItemType type)
+        private Item CreateItem(ItemType type)
         {
-            Item item = Instantiate(viewConfig.items.GetPrefab(type), transform);
+            Item item = pooler.Get(type);
 
             Assert.IsNotNull(item);
 
-            item.transform.localPosition = coordConverter.BoardToWorld(position);
+            item.Initialize(type);
 
             items.Add(item);
 
             return item;
         }
 
-        private void SetSpawner(Item item)
+        private void RemoveItems()
         {
-            spawner = item as Spawner;
+            foreach (Item item in items)
+                pooler.Release(item);
 
-            Assert.IsNotNull(spawner);
-
-            spawner.Initialize(coordConverter);
-            spawner.OnDragEnded += DragEnded;
-        }
-
-        private void UnsetSpawner()
-        {
-            spawner.OnDragEnded -= DragEnded;
-            spawner = null;
+            items.Clear();
         }
 
         private void OnDestroy()
         {
             CancelAnimations();
 
-            spawner.OnDragEnded -= DragEnded;
-            controller.OnSpawnerMoved -= SpawnerMoved;
             controller.OnItemSpawned -= ItemSpawned;
             controller.OnRefreshItems -= RefreshItems;
         }

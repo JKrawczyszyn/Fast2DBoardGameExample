@@ -1,20 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Model;
 using UnityEngine.Assertions;
 
-namespace View.Assets
+namespace View.Config
 {
     [Serializable]
     public class ItemsConfig
     {
         public ItemConfig[] configs;
 
+        private Dictionary<int, Item> cache;
+
         public Item GetPrefab(ItemType type)
         {
-            Item field = configs.Where(c => c.type == type).Select(c => c.prefab).FirstOrDefault();
+            cache ??= configs.ToDictionary(c => (int)c.type, c => c.prefab);
 
-            Assert.IsNotNull(field, $"Prefab for '{type}' not found.");
+            bool success = cache.TryGetValue((int)type, out Item field);
+
+            Assert.IsTrue(success, $"Prefab for item type '{type}' not found.");
 
             return field;
         }

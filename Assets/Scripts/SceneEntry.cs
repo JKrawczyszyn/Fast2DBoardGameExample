@@ -3,7 +3,7 @@ using Model;
 using UnityEngine;
 using Utilities;
 using View;
-using View.Assets;
+using View.Config;
 
 public class SceneEntry : MonoBehaviour
 {
