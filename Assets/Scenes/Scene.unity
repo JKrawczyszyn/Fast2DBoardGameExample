@@ -273,6 +273,7 @@ MonoBehaviour:
   fieldsView: {fileID: 1696694605}
   optimizedFieldsView: {fileID: 1706936031}
   itemsParent: {fileID: 19328845}
+  fpsView: {fileID: 3043008212020599334}
 --- !u!4 &630088319
 Transform:
   m_ObjectHideFlags: 0
@@ -481,6 +482,26 @@ PrefabInstance:
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3292094022339618004, guid: e7cf764b34eb64d469a794dc0c76c004, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3292094022339618004, guid: e7cf764b34eb64d469a794dc0c76c004, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3292094022339618004, guid: e7cf764b34eb64d469a794dc0c76c004, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3292094022339618004, guid: e7cf764b34eb64d469a794dc0c76c004, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3292094022339618004, guid: e7cf764b34eb64d469a794dc0c76c004, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4942977186189902002, guid: e7cf764b34eb64d469a794dc0c76c004, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -538,6 +559,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e7cf764b34eb64d469a794dc0c76c004, type: 3}
+--- !u!114 &3043008212020599334 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3392168392112740871, guid: e7cf764b34eb64d469a794dc0c76c004, type: 3}
+  m_PrefabInstance: {fileID: 3043008212020599333}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 989be8f0a2d14fccacd5b619c48a837a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5805283059798229585
 PrefabInstance:
   m_ObjectHideFlags: 0

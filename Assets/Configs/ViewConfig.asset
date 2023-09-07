@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59add72172ce4031b19075bbe3a46d78, type: 3}
   m_Name: ViewConfig
   m_EditorClassIdentifier: 
-  targetFrameRate: 60
+  targetFrameRate: 120
+  showFps: 1
   spawnAnimationTime: 0.1
   fields:
     optimized: 1

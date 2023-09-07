@@ -87,13 +87,14 @@ GameObject:
   - component: {fileID: 7165273914133510685}
   - component: {fileID: 3585119326719487520}
   - component: {fileID: 596696969840065468}
+  - component: {fileID: 3392168392112740871}
   m_Layer: 5
-  m_Name: FpsText
+  m_Name: FpsView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3292094022339618004
 RectTransform:
   m_ObjectHideFlags: 0
@@ -108,10 +109,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2734488083846239571}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 50, y: -45}
-  m_SizeDelta: {x: 70, y: 50}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 70, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7165273914133510685
 CanvasRenderer:
@@ -230,6 +231,19 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &3392168392112740871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 732739548159949115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 989be8f0a2d14fccacd5b619c48a837a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: {fileID: 3585119326719487520}
 --- !u!1 &1530103660400563795
 GameObject:
   m_ObjectHideFlags: 0
