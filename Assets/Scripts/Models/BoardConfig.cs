@@ -10,6 +10,8 @@ namespace Models
         [Range(0f, 1f)]
         public float blockedChance;
 
+        public int startMaxSearchDistance;
+
         private const string fileName = "BoardConfig";
 
         private Lazy<BoardConfigJson> config;

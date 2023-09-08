@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Controllers;
 using Models;
 using UnityEngine;
@@ -8,9 +9,6 @@ namespace Views
 {
     public class OptimizedFieldsView : MonoBehaviour
     {
-        [SerializeField]
-        private MeshRenderer meshRenderer;
-
         private ViewConfig viewConfig;
         private BoardController controller;
 
@@ -27,35 +25,44 @@ namespace Views
 
         private void Start()
         {
-            meshRenderer.transform.localScale = new Vector2(controller.Width, controller.Height);
-            meshRenderer.material.mainTexture = CreateTexture(controller.Width, controller.Height);
-            meshRenderer.gameObject.SetActive(true);
+            IEnumerable<(Vector2Int offset, Vector2Int size)> chunks
+                = ChunkHelpers.CalculateChunks(controller.Width, controller.Height, viewConfig.fields.maxTextureSize);
+
+            foreach ((Vector2Int offset, Vector2Int size) chunk in chunks)
+            {
+                MeshRenderer meshRenderer = Instantiate(viewConfig.fields.chunkPrefab, Vector3.zero,
+                    Quaternion.identity, transform);
+
+                meshRenderer.material.mainTexture = CreateTexture(chunk);
+                meshRenderer.transform.localScale = new Vector2(chunk.size.x, chunk.size.y);
+
+                meshRenderer.transform.localPosition
+                    = ChunkHelpers.RelativeCenteredPosition(controller.Width, controller.Height, chunk);
+
+                meshRenderer.gameObject.SetActive(true);
+            }
         }
 
-        private Texture CreateTexture(int width, int height)
+        private Texture CreateTexture((Vector2Int offset, Vector2Int size) chunk)
         {
-            int tileWidth = viewConfig.fields.tileSize.x;
-            int tileHeight = viewConfig.fields.tileSize.y;
+            int length = chunk.size.x * chunk.size.y;
 
-            Texture2D texture = new(controller.Width * tileWidth, controller.Height * tileHeight);
+            var colors = new Color[length];
 
-            for (var x = 0; x < width; x++)
+            for (var i = 0; i < length; i++)
             {
-                for (var y = 0; y < height; y++)
-                {
-                    BoardPosition boardPosition = new(x, y);
+                int x = i % chunk.size.x;
+                int y = i / chunk.size.x;
 
-                    FieldType type = controller.GetField(boardPosition);
+                BoardPosition boardPosition = new(x + chunk.offset.x, y + chunk.offset.y);
+                FieldType type = controller.GetField(boardPosition);
 
-                    bool alternate = (x + y) % 2 == 1;
-                    Sprite sprite = viewConfig.fields.GetSprite(type, alternate);
-
-                    Color[] pixels = sprite.texture.GetPixels(0, 0, tileWidth, tileHeight);
-
-                    texture.SetPixels(x * tileWidth, y * tileHeight, tileWidth, tileHeight, pixels);
-                }
+                bool alternate = (x + y) % 2 == 1;
+                colors[i] = viewConfig.fields.GetColor(type, alternate);
             }
 
+            Texture2D texture = new(chunk.size.x, chunk.size.y);
+            texture.SetPixels(colors);
             texture.Apply();
             texture.filterMode = FilterMode.Point;
 

@@ -55,10 +55,7 @@ namespace Views
         {
             var pool = new ObjectPool<Item>(onCreate, onGet, onRelease, onDestroy);
 
-            Item onCreate()
-            {
-                return Object.Instantiate(viewConfig.items.GetPrefab(type), parent);
-            }
+            Item onCreate() => Object.Instantiate(viewConfig.items.GetPrefab(type), parent);
 
             void onGet(Item item)
             {

@@ -41,7 +41,8 @@ namespace Models
         public void SetSpawner(in BoardPosition position)
         {
             Assert.IsTrue(IsPositionValid(position));
-            Assert.IsTrue(IsPositionOpen(position, ItemType.None, ItemType.Spawner));
+            Assert.IsTrue(GetField(position) == FieldType.Open);
+            Assert.IsTrue(IsItemOneOfType(position, new[] { ItemType.None, ItemType.Spawner }));
 
             RemoveItems(ItemType.Spawner);
             SetItem(position, ItemType.Spawner);
@@ -74,15 +75,19 @@ namespace Models
             return count;
         }
 
-        public bool IsPositionOpen(in BoardPosition position, params ItemType[] types)
+        public bool IsItemOneOfType(BoardPosition current, ItemType[] types)
         {
-            if (types.Length == 0)
-                types = new[] { ItemType.None };
+            Assert.IsTrue(IsPositionValid(current));
+            Assert.IsTrue(types.Length > 0);
 
-            return GetField(position) == FieldType.Open && types.Contains(GetItem(position));
+            foreach (ItemType type in types)
+            {
+                if (items[current.X, current.Y] == type)
+                    return true;
+            }
+
+            return false;
         }
-
-        public bool IsPositionBlocked(in BoardPosition position) => GetField(position) == FieldType.Blocked;
 
         private void RemoveItems(ItemType type)
         {
@@ -106,7 +111,8 @@ namespace Models
         public void SetItem(in BoardPosition position, ItemType type)
         {
             Assert.IsTrue(IsPositionValid(position));
-            Assert.IsTrue(IsPositionOpen(position));
+            Assert.IsTrue(GetField(position) == FieldType.Open);
+            Assert.IsTrue(GetItem(position) == ItemType.None);
 
             items[position.X, position.Y] = type;
         }

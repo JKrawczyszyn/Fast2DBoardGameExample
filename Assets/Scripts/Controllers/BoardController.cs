@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Models;
+using UnityEngine;
 using UnityEngine.Assertions;
 using Utilities;
 using Random = UnityEngine.Random;
@@ -15,45 +16,64 @@ namespace Controllers
 
         private readonly ItemType[] itemTypes = { ItemType.Item1, ItemType.Item2, ItemType.Item3 };
 
-        private readonly SpawnController spawnController;
+        private SpawnController spawnController;
+        private BoardAlgorithmService boardAlgorithmService;
 
-        public BoardModel Model { get; }
+        private readonly BoardModel model;
 
-        public int Width => Model.Width;
-        public int Height => Model.Height;
+        public int Width => model.Width;
+        public int Height => model.Height;
 
         public BoardController(BoardModel model)
         {
-            Model = model;
+            this.model = model;
 
-            spawnController = DiManager.Instance.Resolve<SpawnController>();
+            Inject();
 
-            BoardPosition middlePosition = ControllerHelpers.GetMiddle(model.Width, model.Height);
-            BoardPosition validMiddlePosition = ControllerHelpers.GetClosestOpen(model, middlePosition);
+            BoardPosition middlePosition = boardAlgorithmService.GetMiddlePosition(model);
+
+            BoardPosition validMiddlePosition
+                = boardAlgorithmService.GetClosestOpen(model, middlePosition, new[] { ItemType.None });
+
             model.SetSpawner(validMiddlePosition);
         }
 
-        public FieldType GetField(BoardPosition position) => Model.GetField(position);
+        private void Inject()
+        {
+            spawnController = DiManager.Instance.Resolve<SpawnController>();
+            boardAlgorithmService = DiManager.Instance.Resolve<BoardAlgorithmService>();
+        }
+
+        public FieldType GetField(BoardPosition position) => model.GetField(position);
 
         public BoardPosition GetSpawner()
         {
-            BoardPosition position = Model.GetSpawner();
+            BoardPosition position = model.GetSpawner();
 
             Assert.IsFalse(position == default);
 
             return position;
         }
 
-        public void SpawnerMove(BoardPosition position)
+        public void SpawnerMove(Vector2 position)
         {
-            if (position != default)
-                Model.SetSpawner(position);
+            SetSpawner(position);
 
-            BoardPosition boardPosition = Model.GetSpawner();
+            BoardPosition boardPosition = model.GetSpawner();
 
             Assert.IsFalse(boardPosition == default);
 
             OnSpawnerMoved?.Invoke(boardPosition);
+        }
+
+        private void SetSpawner(Vector2 position)
+        {
+            BoardPosition boardPosition
+                = boardAlgorithmService.GetClosestOpen(model, position, new[] { ItemType.None, ItemType.Spawner });
+
+            Assert.IsFalse(boardPosition == default);
+
+            model.SetSpawner(boardPosition);
         }
 
         public void ResetSpawner()
@@ -63,15 +83,16 @@ namespace Controllers
 
         public void SpawnItem()
         {
-            BoardPosition startPosition = Model.GetSpawner();
+            BoardPosition startPosition = model.GetSpawner();
 
-            BoardPosition position = spawnController.FindNextFreeSpawnPosition(Model, startPosition);
+            BoardPosition position = spawnController.FindNextFreeSpawnPosition(model, startPosition);
+
             if (position == default)
                 return;
 
             ItemType itemType = GetRandomItemType();
 
-            Model.SetItem(position, itemType);
+            model.SetItem(position, itemType);
 
             OnItemSpawned?.Invoke(startPosition, position, itemType);
         }
@@ -80,11 +101,12 @@ namespace Controllers
 
         public void ClearAdjacent()
         {
-            HashSet<BoardPosition> toRemove = ControllerHelpers.GetAdjacentPositions(Model);
-            foreach (BoardPosition position in toRemove)
-                Model.RemoveItem(position);
+            HashSet<BoardPosition> toRemove = boardAlgorithmService.GetAdjacentPositions(model);
 
-            OnRefreshItems?.Invoke(Model.GetItems(itemTypes));
+            foreach (BoardPosition position in toRemove)
+                model.RemoveItem(position);
+
+            OnRefreshItems?.Invoke(model.GetItems(itemTypes));
         }
     }
 }

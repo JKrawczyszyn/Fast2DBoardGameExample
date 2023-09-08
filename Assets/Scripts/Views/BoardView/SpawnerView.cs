@@ -53,10 +53,9 @@ namespace Views
             spawner.OnDragEnded += DragEnded;
         }
 
-        private void DragEnded(Vector2 position)
+        private void DragEnded(Vector2 worldPosition)
         {
-            BoardPosition boardPosition = ViewHelpers.GetClosestOpen(controller.Model, coordConverter, position,
-                ItemType.None, ItemType.Spawner);
+            Vector2 boardPosition = coordConverter.WorldToBoard(worldPosition);
 
             controller.SpawnerMove(boardPosition);
         }

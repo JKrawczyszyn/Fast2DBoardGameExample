@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Models;
 using UnityEngine;
-using Utilities;
 
 namespace Controllers
 {
@@ -24,7 +23,8 @@ namespace Controllers
             {
                 BoardPosition position = startPosition + relativePosition;
 
-                if (model.IsPositionValid(position) && model.IsPositionOpen(position))
+                if (model.IsPositionValid(position) && model.GetField(position) == FieldType.Open
+                    && model.GetItem(position) == ItemType.None)
                     return position;
             }
 

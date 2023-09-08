@@ -7,9 +7,9 @@ namespace Views
         [SerializeField]
         private SpriteRenderer spriteRenderer;
 
-        public void Initialize(Sprite sprite)
+        public void Initialize(Color color)
         {
-            spriteRenderer.sprite = sprite;
+            spriteRenderer.color = color;
         }
     }
 }

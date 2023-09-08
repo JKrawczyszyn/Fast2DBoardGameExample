@@ -38,6 +38,7 @@ public class SceneEntry : MonoBehaviour
         DiManager.Instance.Initialize();
 
         BindControllers();
+
         BindViews();
     }
 
@@ -45,6 +46,10 @@ public class SceneEntry : MonoBehaviour
     {
         boardConfig.Initialize();
         DiManager.Instance.Bind(boardConfig);
+
+        BoardAlgorithmService boardAlgorithmService = new();
+        boardAlgorithmService.Initialize(boardConfig.startMaxSearchDistance);
+        DiManager.Instance.Bind(boardAlgorithmService);
 
         SpawnController spawnController = new();
         DiManager.Instance.Bind(spawnController);

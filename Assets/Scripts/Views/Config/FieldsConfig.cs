@@ -12,22 +12,48 @@ namespace Views.Config
     {
         public bool optimized;
         public Field prefab;
-        public Vector2Int tileSize;
+        public MeshRenderer chunkPrefab;
+        public Vector2Int maxTextureSize;
         public FieldConfig[] configs;
 
-        private Dictionary<(int, bool), Sprite> cache;
+        [NonSerialized]
+        private FieldConfig[] cache;
 
-        public Sprite GetSprite(FieldType type, bool alternate = false)
+        [NonSerialized]
+        private FieldConfig[] cacheAlternate;
+
+        public Color GetColor(FieldType type, bool alternate = false)
         {
-            cache ??= configs.ToDictionary(c => ((int)c.type, c.alternate), c => c.sprite);
+            CreateCacheIfShould();
 
-            bool success = cache.TryGetValue(((int)type, alternate), out Sprite sprite);
-            if (!success)
-                success = cache.TryGetValue(((int)type, false), out sprite);
+            FieldConfig fieldConfig = alternate ? cacheAlternate[(int)type] : cache[(int)type];
 
-            Assert.IsTrue(success, $"Sprite for field type '{type}' not found.");
+            return fieldConfig.color;
+        }
 
-            return sprite;
+        private void CreateCacheIfShould()
+        {
+            if (cache != null && cacheAlternate != null)
+                return;
+
+            // Assume we are using standard enum without gaps
+            int length = Enum.GetValues(typeof(FieldType)).Length;
+            cache = new FieldConfig[length];
+            cacheAlternate = new FieldConfig[length];
+
+            foreach (FieldConfig config in configs)
+            {
+                if (config.alternate)
+                    cacheAlternate[(int)config.type] = config;
+                else
+                {
+                    cache[(int)config.type] = config;
+                    cacheAlternate[(int)config.type] ??= config;
+                }
+            }
+
+            Assert.IsTrue(cache.All(c => c != null));
+            Assert.IsTrue(cacheAlternate.All(c => c != null));
         }
 
         [Serializable]
@@ -35,7 +61,7 @@ namespace Views.Config
         {
             public FieldType type;
             public bool alternate;
-            public Sprite sprite;
+            public Color color;
         }
     }
 }

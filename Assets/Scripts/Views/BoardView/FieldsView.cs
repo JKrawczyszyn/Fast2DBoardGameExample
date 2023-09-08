@@ -44,9 +44,9 @@ namespace Views
                     Field field = CreateField(boardPosition);
 
                     bool alternate = (x + y) % 2 == 1;
-                    Sprite sprite = viewConfig.fields.GetSprite(type, alternate);
+                    Color color = viewConfig.fields.GetColor(type, alternate);
 
-                    field.Initialize(sprite);
+                    field.Initialize(color);
                 }
             }
         }

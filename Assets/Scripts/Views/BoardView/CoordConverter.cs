@@ -17,6 +17,14 @@ namespace Views
             this.height = height;
         }
 
+        public Vector2 WorldToBoard(Vector2 position)
+        {
+            float x = position.x + ((width - 1) / 2f);
+            float y = position.y + ((height - 1) / 2f);
+
+            return new Vector2(x, y);
+        }
+
         public Vector3 BoardToWorld(in BoardPosition position)
         {
             float x = position.X - ((width - 1) / 2f);

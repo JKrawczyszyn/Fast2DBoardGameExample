@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: BoardConfig
   m_EditorClassIdentifier: 
   blockedChance: 0.25
+  startMaxSearchDistance: 10

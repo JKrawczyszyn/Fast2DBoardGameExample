@@ -18,17 +18,18 @@ MonoBehaviour:
   fields:
     optimized: 1
     prefab: {fileID: 5977802426674256142, guid: 24118f0b2e741d148925442b10e13dfc, type: 3}
-    tileSize: {x: 2, y: 2}
+    chunkPrefab: {fileID: 7684030736211736814, guid: 8f2cdd6a82e99cb4c989486e796486ea, type: 3}
+    maxTextureSize: {x: 512, y: 512}
     configs:
     - type: 0
       alternate: 0
-      sprite: {fileID: 21300000, guid: d3144fe11395fd747b1e9c5912940a56, type: 3}
+      color: {r: 0, g: 0, b: 0, a: 1}
     - type: 1
       alternate: 0
-      sprite: {fileID: 21300000, guid: 1c1e84ca7ffebba4fbe50adf6e7237c4, type: 3}
+      color: {r: 0.8396226, g: 0.8396226, b: 0.8396226, a: 1}
     - type: 1
       alternate: 1
-      sprite: {fileID: 21300000, guid: 60e77da404a6cfd4fb8ca719d804b1ff, type: 3}
+      color: {r: 0.5566038, g: 0.5566038, b: 0.5566038, a: 1}
   items:
     configs:
     - type: 1
