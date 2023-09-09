@@ -38,7 +38,7 @@ namespace Controllers
             for (var i = 0; i < maxElements; i++)
             {
                 if (Mathf.Abs(currentPosition.X) == Mathf.Abs(currentPosition.Y))
-                    direction = direction.RotateClockwise();
+                    direction = direction.RotatedClockwise();
 
                 currentPosition += direction;
 

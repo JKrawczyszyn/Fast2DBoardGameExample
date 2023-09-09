@@ -8,7 +8,8 @@ namespace Models
     public class BoardModel
     {
         private readonly FieldType[,] fields;
-        private readonly ItemType[,] items;
+        private readonly Dictionary<BoardPosition, ItemType> items;
+        private readonly HashSet<BoardPosition> toClear;
 
         private BoardPosition? spawnerPositionCache;
 
@@ -21,7 +22,8 @@ namespace Models
             Height = height;
 
             fields = new FieldType[width, height];
-            items = new ItemType[width, height];
+            items = new Dictionary<BoardPosition, ItemType>();
+            toClear = new HashSet<BoardPosition>();
         }
 
         public void SetField(in BoardPosition position, FieldType type)
@@ -46,15 +48,15 @@ namespace Models
 
             RemoveItems(ItemType.Spawner);
             SetItem(position, ItemType.Spawner);
+
+            spawnerPositionCache = position;
         }
 
         public BoardPosition GetSpawner()
         {
-            if (!spawnerPositionCache.HasValue
-                || items[spawnerPositionCache.Value.X, spawnerPositionCache.Value.Y] != ItemType.Spawner)
-                spawnerPositionCache = GetItemPositions(ItemType.Spawner).FirstOrDefault();
+            spawnerPositionCache ??= GetItemPositions(ItemType.Spawner).FirstOrDefault();
 
-            return spawnerPositionCache ?? default;
+            return spawnerPositionCache.Value;
         }
 
         public int CountFields(FieldType type)
@@ -82,7 +84,12 @@ namespace Models
 
             foreach (ItemType type in types)
             {
-                if (items[current.X, current.Y] == type)
+                bool success = items.TryGetValue(current, out ItemType outType);
+
+                if (!success && type == ItemType.None)
+                    return true;
+
+                if (success && outType == type)
                     return true;
             }
 
@@ -91,21 +98,17 @@ namespace Models
 
         private void RemoveItems(ItemType type)
         {
-            for (var x = 0; x < Width; x++)
-            {
-                for (var y = 0; y < Height; y++)
-                {
-                    if (items[x, y] == type)
-                        items[x, y] = ItemType.None;
-                }
-            }
+            foreach (BoardPosition position in GetItemPositions(type).ToArray())
+                items.Remove(position);
         }
 
         public void RemoveItem(in BoardPosition position)
         {
             Assert.IsTrue(IsPositionValid(position));
+            Assert.IsTrue(items.ContainsKey(position));
 
-            items[position.X, position.Y] = ItemType.None;
+            items.Remove(position);
+            toClear.Remove(position);
         }
 
         public void SetItem(in BoardPosition position, ItemType type)
@@ -113,46 +116,56 @@ namespace Models
             Assert.IsTrue(IsPositionValid(position));
             Assert.IsTrue(GetField(position) == FieldType.Open);
             Assert.IsTrue(GetItem(position) == ItemType.None);
+            Assert.IsFalse(items.ContainsKey(position));
 
-            items[position.X, position.Y] = type;
+            items.Add(position, type);
         }
 
         public ItemType GetItem(in BoardPosition position)
         {
             Assert.IsTrue(IsPositionValid(position));
 
-            return items[position.X, position.Y];
+            bool success = items.TryGetValue(position, out ItemType type);
+
+            return !success ? ItemType.None : type;
         }
 
-        public IEnumerable<(BoardPosition position, ItemType type)> GetItems(ItemType[] itemTypes)
-        {
-            for (var x = 0; x < Width; x++)
-            {
-                for (var y = 0; y < Height; y++)
-                {
-                    ItemType type = items[x, y];
+        public IEnumerable<(BoardPosition position, ItemType type)> GetItems(ItemType[] itemTypes) =>
+            items.Where(pair => itemTypes.Contains(pair.Value)).Select(pair => (pair.Key, pair.Value));
 
-                    if (type == ItemType.None || !itemTypes.Contains(type))
-                        continue;
-
-                    yield return (new BoardPosition(x, y), type);
-                }
-            }
-        }
-
-        private IEnumerable<BoardPosition> GetItemPositions(ItemType type)
-        {
-            for (var x = 0; x < Width; x++)
-            {
-                for (var y = 0; y < Height; y++)
-                {
-                    if (items[x, y] == type)
-                        yield return new BoardPosition(x, y);
-                }
-            }
-        }
+        private IEnumerable<BoardPosition> GetItemPositions(ItemType type) =>
+            items.Where(pair => pair.Value == type).Select(pair => pair.Key);
 
         public bool IsPositionValid(in BoardPosition position) =>
             position.X.Between(0, Width - 1) && position.Y.Between(0, Height - 1);
+
+        public void SetClear(IEnumerable<BoardPosition> positions)
+        {
+            foreach (BoardPosition position in positions)
+                SetClear(position);
+        }
+
+        public void SetClear(BoardPosition position)
+        {
+            Assert.IsTrue(IsPositionValid(position));
+
+            toClear.Add(position);
+        }
+
+        public IEnumerable<BoardPosition> GetClear() => toClear;
+
+        public bool GetClear(BoardPosition position)
+        {
+            Assert.IsTrue(IsPositionValid(position));
+
+            return toClear.Contains(position);
+        }
+
+        public void RemoveClear(BoardPosition position)
+        {
+            Assert.IsTrue(IsPositionValid(position));
+
+            toClear.Remove(position);
+        }
     }
 }

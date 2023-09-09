@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Utilities
 {
-    public static class AnimationsExtensions
+    public static class AnimationExtensions
     {
         public static async Task AnimateMoveLocal(this Transform transform, Vector3 start, Vector3 end,
             float timeSeconds, CancellationToken ct)

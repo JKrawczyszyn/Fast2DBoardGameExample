@@ -41,20 +41,14 @@ namespace Controllers
                 {
                     BoardPosition position = new(x, y);
 
-                    if (GetDistanceSqr(position, BoardPosition.Zero) > maxDistanceSqr)
+                    if (position.MagnitudeSqr > maxDistanceSqr)
                         continue;
 
                     nearestPositions.Add(position);
                 }
             }
 
-            nearestPositions.Sort((position1, position2) =>
-            {
-                int distance1 = GetDistanceSqr(position1, BoardPosition.Zero);
-                int distance2 = GetDistanceSqr(position2, BoardPosition.Zero);
-
-                return distance1.CompareTo(distance2);
-            });
+            nearestPositions.Sort((position1, position2) => position1.MagnitudeSqr.CompareTo(position2.MagnitudeSqr));
 
             return nearestPositions.ToArray();
         }
@@ -69,7 +63,7 @@ namespace Controllers
             {
                 BoardPosition position = nearestOffsetsLookup[i];
 
-                if (GetDistanceSqr(position, BoardPosition.Zero) <= currentDistance * currentDistance)
+                if (position.MagnitudeSqr <= currentDistance * currentDistance)
                     continue;
 
                 indexes.Add(i);
@@ -80,48 +74,6 @@ namespace Controllers
             indexes.Add(nearestOffsetsLookup.Length);
 
             return indexes.ToArray();
-        }
-
-        private int GetDistanceSqr(BoardPosition position1, BoardPosition position2)
-        {
-            int x = position1.X - position2.X;
-            int y = position1.Y - position2.Y;
-
-            return (x * x) + (y * y);
-        }
-
-        private float GetRealDistanceSqr(BoardPosition position1, Vector2 position2)
-        {
-            float x = position1.X - position2.x;
-            float y = position1.Y - position2.y;
-
-            return (x * x) + (y * y);
-        }
-
-        public BoardPosition GetClosestOpen(BoardModel model, BoardPosition position, ItemType[] types)
-        {
-            while (true)
-            {
-                foreach (BoardPosition offset in nearestOffsetsLookup)
-                {
-                    BoardPosition current = position + offset;
-
-                    if (!current.X.Between(0, model.Width - 1) || !current.Y.Between(0, model.Height - 1))
-                        continue;
-
-                    if (model.GetField(current) != FieldType.Open || !model.IsItemOneOfType(current, types))
-                        continue;
-
-                    return current;
-                }
-
-                if (maxSearchDistance >= Mathf.Max(model.Width, model.Height))
-                    return default;
-
-                maxSearchDistance = Mathf.Min(maxSearchDistance + 2, model.Width, model.Height);
-
-                GenerateLookups();
-            }
         }
 
         public BoardPosition GetClosestOpen(BoardModel model, Vector2 floatPosition, ItemType[] types)
@@ -171,7 +123,7 @@ namespace Controllers
                 if (model.GetField(current) != FieldType.Open || !model.IsItemOneOfType(current, types))
                     continue;
 
-                float distance = GetRealDistanceSqr(current, floatPosition);
+                float distance = current.DistanceSqrTo(floatPosition);
 
                 if (distance >= nearestDistance)
                     continue;
@@ -183,47 +135,21 @@ namespace Controllers
             return nearestPosition;
         }
 
-        public HashSet<BoardPosition> GetAdjacentPositions(BoardModel model)
-        {
-            HashSet<BoardPosition> result = new();
-
-            for (var x = 0; x < model.Width; x++)
-            {
-                for (var y = 0; y < model.Height; y++)
-                {
-                    BoardPosition position = new(x, y);
-
-                    if (model.GetField(position) == FieldType.Blocked)
-                        continue;
-
-                    ItemType type = model.GetItem(position);
-
-                    if (type == ItemType.None)
-                        continue;
-
-                    bool adjacent = x < model.Width - 1 && Find(model, x + 1, y, type, ref result);
-                    adjacent = adjacent || (y < model.Height - 1 && Find(model, x, y + 1, type, ref result));
-
-                    if (adjacent)
-                        result.Add(position);
-                }
-            }
-
-            return result;
-        }
-
-        private bool Find(BoardModel model, int x, int y, ItemType type, ref HashSet<BoardPosition> result)
-        {
-            BoardPosition position = new(x, y);
-
-            if (model.GetItem(position) != type)
-                return false;
-
-            result.Add(position);
-
-            return true;
-        }
-
         public BoardPosition GetMiddlePosition(BoardModel model) => new(model.Width / 2, model.Height / 2);
+
+        public IEnumerable<BoardPosition> GetAdjacentOfType(BoardModel model, BoardPosition position, ItemType type)
+        {
+            BoardPosition[] adjacentPositions =
+            {
+                position + BoardPosition.Up, position + BoardPosition.Right, position + BoardPosition.Down,
+                position + BoardPosition.Left
+            };
+
+            foreach (BoardPosition adjacent in adjacentPositions)
+            {
+                if (model.IsPositionValid(adjacent) && model.GetItem(adjacent) == type)
+                    yield return adjacent;
+            }
+        }
     }
 }

@@ -61,7 +61,7 @@ namespace Views
             item.SetOrder(0);
         }
 
-        private void RefreshItems(IEnumerable<(BoardPosition position, ItemType type)> currentItems)
+        private void RefreshItems((BoardPosition position, ItemType type)[] currentItems)
         {
             CancelAnimations();
             RemoveItems();
@@ -75,7 +75,7 @@ namespace Views
             animationsCts = new CancellationTokenSource();
         }
 
-        private void CreateItems(IEnumerable<(BoardPosition position, ItemType type)> currentItems)
+        private void CreateItems((BoardPosition position, ItemType type)[] currentItems)
         {
             foreach ((BoardPosition position, ItemType type) in currentItems)
             {

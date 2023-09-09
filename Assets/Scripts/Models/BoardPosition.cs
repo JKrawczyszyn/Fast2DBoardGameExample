@@ -6,14 +6,7 @@ namespace Models
 {
     public readonly struct BoardPosition : IEquatable<BoardPosition>, IFormattable
     {
-        /// <summary>
-        /// Column
-        /// </summary>
         public readonly int X;
-
-        /// <summary>
-        /// Row
-        /// </summary>
         public readonly int Y;
 
         private readonly bool nonDefault;
@@ -22,44 +15,27 @@ namespace Models
         {
             X = x;
             Y = y;
+
             nonDefault = true;
         }
 
-        public BoardPosition(Vector2Int v) : this(v.x, v.y)
-        {
-        }
+        public int MagnitudeSqr => (X * X) + (Y * Y);
 
         public float Magnitude => Mathf.Sqrt((X * X) + (Y * Y));
 
-        public int SqrMagnitude => (X * X) + (Y * Y);
-
-        public static float Distance(in BoardPosition a, in BoardPosition b)
+        public float DistanceSqrTo(Vector2 floatPosition)
         {
-            float num1 = a.X - b.X;
-            float num2 = a.Y - b.Y;
+            float x = X - floatPosition.x;
+            float y = Y - floatPosition.y;
 
-            return (float)Math.Sqrt((num1 * (double)num1) + (num2 * (double)num2));
+            return (x * x) + (y * y);
         }
 
-        public static BoardPosition Min(in BoardPosition lhs, in BoardPosition rhs) =>
-            new(Mathf.Min(lhs.X, rhs.X), Mathf.Min(lhs.Y, rhs.Y));
+        public float DistanceTo(Vector2 floatPosition) => Mathf.Sqrt(DistanceSqrTo(floatPosition));
 
-        public static BoardPosition Max(in BoardPosition lhs, in BoardPosition rhs) =>
-            new(Mathf.Max(lhs.X, rhs.X), Mathf.Max(lhs.Y, rhs.Y));
+        public BoardPosition RotatedClockwise() => new(Y, -X);
 
-        public static BoardPosition Scale(in BoardPosition a, in BoardPosition b) => new(a.X * b.X, a.Y * b.Y);
-
-        public BoardPosition Scale(in BoardPosition scale) => new(X * scale.X, Y * scale.Y);
-
-        public BoardPosition Clamp(BoardPosition min, BoardPosition max)
-        {
-            int x = Math.Max(min.X, X);
-            x = Math.Min(max.X, x);
-            int y = Math.Max(min.Y, Y);
-            y = Math.Min(max.Y, y);
-
-            return new BoardPosition(x, y);
-        }
+        public Vector2 ToVector2() => new(X, Y);
 
         public static BoardPosition operator -(BoardPosition v) => new(-v.X, -v.Y);
 

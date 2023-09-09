@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Models;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -12,7 +13,7 @@ namespace Controllers
     {
         public event Action<BoardPosition> OnSpawnerMoved;
         public event Action<BoardPosition, BoardPosition, ItemType> OnItemSpawned;
-        public event Action<IEnumerable<(BoardPosition position, ItemType type)>> OnRefreshItems;
+        public event Action<(BoardPosition position, ItemType type)[]> OnRefreshItems;
 
         private readonly ItemType[] itemTypes = { ItemType.Item1, ItemType.Item2, ItemType.Item3 };
 
@@ -33,7 +34,7 @@ namespace Controllers
             BoardPosition middlePosition = boardAlgorithmService.GetMiddlePosition(model);
 
             BoardPosition validMiddlePosition
-                = boardAlgorithmService.GetClosestOpen(model, middlePosition, new[] { ItemType.None });
+                = boardAlgorithmService.GetClosestOpen(model, middlePosition.ToVector2(), new[] { ItemType.None });
 
             model.SetSpawner(validMiddlePosition);
         }
@@ -45,6 +46,10 @@ namespace Controllers
         }
 
         public FieldType GetField(BoardPosition position) => model.GetField(position);
+
+        public ItemType GetItem(BoardPosition position) => model.GetItem(position);
+
+        public bool GetClear(BoardPosition position) => model.GetClear(position);
 
         public BoardPosition GetSpawner()
         {
@@ -94,19 +99,50 @@ namespace Controllers
 
             model.SetItem(position, itemType);
 
+            SetClearStatuses(position, itemType);
+
             OnItemSpawned?.Invoke(startPosition, position, itemType);
+        }
+
+        private void SetClearStatuses(BoardPosition position, ItemType itemType)
+        {
+            IEnumerable<BoardPosition> adjacent = boardAlgorithmService.GetAdjacentOfType(model, position, itemType);
+
+            BoardPosition[] adjacentArray = adjacent as BoardPosition[] ?? adjacent.ToArray();
+
+            if (adjacentArray.Length == 0)
+                return;
+
+            model.SetClear(position);
+            model.SetClear(adjacentArray);
         }
 
         private ItemType GetRandomItemType() => itemTypes[Random.Range(0, itemTypes.Length)];
 
         public void ClearAdjacent()
         {
-            HashSet<BoardPosition> toRemove = boardAlgorithmService.GetAdjacentPositions(model);
+            IEnumerable<BoardPosition> toRemove = model.GetClear();
 
-            foreach (BoardPosition position in toRemove)
-                model.RemoveItem(position);
+            foreach (BoardPosition positionToRemove in toRemove.ToArray())
+            {
+                ItemType type = model.GetItem(positionToRemove);
 
-            OnRefreshItems?.Invoke(model.GetItems(itemTypes));
+                model.RemoveItem(positionToRemove);
+                model.RemoveClear(positionToRemove);
+
+                IEnumerable<BoardPosition> adjacent = boardAlgorithmService.GetAdjacentOfType(model, positionToRemove, type);
+                foreach (BoardPosition adjacentPosition in adjacent)
+                    RemoveClearIfNoAdjacent(adjacentPosition, type);
+            }
+
+            OnRefreshItems?.Invoke(model.GetItems(itemTypes).ToArray());
+        }
+
+        private void RemoveClearIfNoAdjacent(BoardPosition position, ItemType type)
+        {
+            IEnumerable<BoardPosition> adjacent = boardAlgorithmService.GetAdjacentOfType(model, position, type);
+            if (!adjacent.Any())
+                model.RemoveClear(position);
         }
     }
 }

@@ -31,6 +31,9 @@ public class SceneEntry : MonoBehaviour
     [SerializeField]
     private FpsView fpsView;
 
+    [SerializeField]
+    private DebugView debugView;
+
     private void Awake()
     {
         Application.targetFrameRate = viewConfig.targetFrameRate;
@@ -82,5 +85,8 @@ public class SceneEntry : MonoBehaviour
 
         if (!viewConfig.showFps)
             Destroy(fpsView.gameObject);
+
+        if (!viewConfig.debugView)
+            Destroy(debugView.gameObject);
     }
 }

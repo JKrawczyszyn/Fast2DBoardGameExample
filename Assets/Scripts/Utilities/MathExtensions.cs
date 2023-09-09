@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Utilities
 {
-    public static class TypeExtensions
+    public static class MathExtensions
     {
         public static bool Between(this int value, int min, int max, bool inclusive = true)
         {
@@ -23,12 +22,6 @@ namespace Utilities
                 return max;
 
             return value;
-        }
-
-        // Used so we can use fire and forget tasks and still catch exceptions.
-        public static async void Forget(this Task task)
-        {
-            await task;
         }
     }
 }

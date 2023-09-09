@@ -274,6 +274,7 @@ MonoBehaviour:
   optimizedFieldsView: {fileID: 1706936031}
   itemsParent: {fileID: 19328845}
   fpsView: {fileID: 3043008212020599334}
+  debugView: {fileID: 5805283059798229586}
 --- !u!4 &630088319
 Transform:
   m_ObjectHideFlags: 0
@@ -627,6 +628,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3084f903f622ba41a91909233ee0601, type: 3}
+--- !u!114 &5805283059798229586 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3808833089140298855, guid: a3084f903f622ba41a91909233ee0601, type: 3}
+  m_PrefabInstance: {fileID: 5805283059798229585}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bffc3f4feffd4ddcb63ed2da13c3dce6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
