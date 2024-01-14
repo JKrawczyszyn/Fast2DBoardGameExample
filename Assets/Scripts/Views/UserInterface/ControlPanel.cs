@@ -21,13 +21,8 @@ namespace Views
 
         private void Awake()
         {
-            Inject();
-        }
-
-        private void Inject()
-        {
-            inputView = DiManager.Instance.Resolve<InputView>();
-            boardController = DiManager.Instance.Resolve<BoardController>();
+            inputView = ServiceLocator.Instance.Resolve<InputView>();
+            boardController = ServiceLocator.Instance.Resolve<BoardController>();
         }
 
         private void Start()
@@ -38,12 +33,20 @@ namespace Views
 
         private void InitializeSlider()
         {
-            scaleSlider.minValue = inputView.ScaleMin;
-            scaleSlider.maxValue = inputView.ScaleMax;
-            scaleSlider.value = inputView.ScaleMax;
-            scaleSlider.onValueChanged.AddListener(inputView.SetScale);
+            float min = inputView.ScaleMin;
+            float max = Mathf.Sqrt(Mathf.Sqrt(Mathf.Sqrt(inputView.ScaleMax)));
+            
+            scaleSlider.minValue = min;
+            scaleSlider.maxValue = max;
+            scaleSlider.value = max;
+            scaleSlider.onValueChanged.AddListener(SetScale);
 
-            inputView.SetScale(inputView.ScaleMax);
+            SetScale(max);
+        }
+
+        private void SetScale(float scale)
+        {
+            inputView.SetScale(Mathf.Pow(scale, 8));
         }
 
         private void InitializeButtons()
@@ -60,7 +63,7 @@ namespace Views
 
         private void OnDestroy()
         {
-            scaleSlider.onValueChanged.RemoveListener(inputView.SetScale);
+            scaleSlider.onValueChanged.RemoveListener(SetScale);
             spawnButton.OnPress -= boardController.ResetSpawner;
             clearButton.onClick.RemoveListener(boardController.ClearAdjacent);
         }

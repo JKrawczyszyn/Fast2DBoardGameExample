@@ -16,13 +16,8 @@ namespace Views
 
         private void Awake()
         {
-            Inject();
-        }
-
-        private void Inject()
-        {
-            boardController = DiManager.Instance.Resolve<BoardController>();
-            coordConverter = DiManager.Instance.Resolve<CoordConverter>();
+            boardController = ServiceLocator.Instance.Resolve<BoardController>();
+            coordConverter = ServiceLocator.Instance.Resolve<CoordConverter>();
         }
 
         public void OnDrawGizmos()

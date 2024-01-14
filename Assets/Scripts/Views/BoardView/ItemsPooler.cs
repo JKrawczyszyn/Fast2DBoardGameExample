@@ -19,12 +19,7 @@ namespace Views
         {
             this.parent = parent;
 
-            Inject();
-        }
-
-        private void Inject()
-        {
-            viewConfig = DiManager.Instance.Resolve<ViewConfig>();
+            viewConfig = ServiceLocator.Instance.Resolve<ViewConfig>();
         }
 
         public Item Get(ItemType type)

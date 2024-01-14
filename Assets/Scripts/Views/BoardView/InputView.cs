@@ -20,14 +20,9 @@ namespace Views
 
         private void Awake()
         {
-            Inject();
-        }
-
-        private void Inject()
-        {
-            boardConfig = DiManager.Instance.Resolve<BoardConfig>();
-            camera = DiManager.Instance.Resolve<Camera>();
-            coordConverter = DiManager.Instance.Resolve<CoordConverter>();
+            boardConfig = ServiceLocator.Instance.Resolve<BoardConfig>();
+            camera = ServiceLocator.Instance.Resolve<Camera>();
+            coordConverter = ServiceLocator.Instance.Resolve<CoordConverter>();
         }
 
         private void Start()

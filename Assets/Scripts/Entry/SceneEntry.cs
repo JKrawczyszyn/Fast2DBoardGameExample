@@ -38,7 +38,7 @@ public class SceneEntry : MonoBehaviour
     {
         Application.targetFrameRate = viewConfig.targetFrameRate;
 
-        DiManager.Instance.Initialize();
+        ServiceLocator.Instance.Initialize();
 
         BindControllers();
 
@@ -48,40 +48,40 @@ public class SceneEntry : MonoBehaviour
     private void BindControllers()
     {
         boardConfig.Initialize();
-        DiManager.Instance.Bind(boardConfig);
+        ServiceLocator.Instance.Bind(boardConfig);
 
         BoardAlgorithmService boardAlgorithmService = new();
         boardAlgorithmService.Initialize(boardConfig.startMaxSearchDistance);
-        DiManager.Instance.Bind(boardAlgorithmService);
+        ServiceLocator.Instance.Bind(boardAlgorithmService);
 
         SpawnController spawnController = new();
-        DiManager.Instance.Bind(spawnController);
+        ServiceLocator.Instance.Bind(spawnController);
 
         BoardFactory factory = new();
         BoardModel model = factory.Get();
         BoardController boardController = new(model);
-        DiManager.Instance.Bind(boardController);
+        ServiceLocator.Instance.Bind(boardController);
     }
 
     private void BindViews()
     {
-        DiManager.Instance.Bind(viewConfig);
+        ServiceLocator.Instance.Bind(viewConfig);
 
-        DiManager.Instance.Bind(camera);
+        ServiceLocator.Instance.Bind(camera);
 
-        DiManager.Instance.Bind(inputView);
+        ServiceLocator.Instance.Bind(inputView);
 
         CoordConverter coordConverter = new(camera, boardConfig.Width, boardConfig.Height);
-        DiManager.Instance.Bind(coordConverter);
+        ServiceLocator.Instance.Bind(coordConverter);
 
         if (viewConfig.fields.optimized)
             Destroy(fieldsView.gameObject);
         else
             Destroy(optimizedFieldsView.gameObject);
 
-        DiManager.Instance.Bind(new ItemsPooler(itemsParent));
+        ServiceLocator.Instance.Bind(new ItemsPooler(itemsParent));
 
-        DiManager.Instance.Bind(new ItemsFactory());
+        ServiceLocator.Instance.Bind(new ItemsFactory());
 
         if (!viewConfig.showFps)
             Destroy(fpsView.gameObject);

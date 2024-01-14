@@ -10,12 +10,7 @@ namespace Views
 
         public ItemsFactory()
         {
-            Inject();
-        }
-
-        private void Inject()
-        {
-            pooler = DiManager.Instance.Resolve<ItemsPooler>();
+            pooler = ServiceLocator.Instance.Resolve<ItemsPooler>();
         }
 
         public Item Create(ItemType type)

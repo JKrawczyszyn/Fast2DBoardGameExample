@@ -14,13 +14,8 @@ namespace Views
 
         private void Awake()
         {
-            Inject();
-        }
-
-        private void Inject()
-        {
-            viewConfig = DiManager.Instance.Resolve<ViewConfig>();
-            controller = DiManager.Instance.Resolve<BoardController>();
+            viewConfig = ServiceLocator.Instance.Resolve<ViewConfig>();
+            controller = ServiceLocator.Instance.Resolve<BoardController>();
         }
 
         private void Start()

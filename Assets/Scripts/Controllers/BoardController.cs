@@ -29,7 +29,8 @@ namespace Controllers
         {
             this.model = model;
 
-            Inject();
+            spawnController = ServiceLocator.Instance.Resolve<SpawnController>();
+            boardAlgorithmService = ServiceLocator.Instance.Resolve<BoardAlgorithmService>();
 
             BoardPosition middlePosition = boardAlgorithmService.GetMiddlePosition(model);
 
@@ -37,12 +38,6 @@ namespace Controllers
                 = boardAlgorithmService.GetClosestOpen(model, middlePosition.ToVector2(), new[] { ItemType.None });
 
             model.SetSpawner(validMiddlePosition);
-        }
-
-        private void Inject()
-        {
-            spawnController = DiManager.Instance.Resolve<SpawnController>();
-            boardAlgorithmService = DiManager.Instance.Resolve<BoardAlgorithmService>();
         }
 
         public FieldType GetField(BoardPosition position) => model.GetField(position);

@@ -7,17 +7,7 @@ namespace Models
 {
     public class BoardFactory
     {
-        private BoardConfig boardConfig;
-
-        public BoardFactory()
-        {
-            Inject();
-        }
-
-        private void Inject()
-        {
-            boardConfig = DiManager.Instance.Resolve<BoardConfig>();
-        }
+        private readonly BoardConfig boardConfig = ServiceLocator.Instance.Resolve<BoardConfig>();
 
         public BoardModel Get()
         {
