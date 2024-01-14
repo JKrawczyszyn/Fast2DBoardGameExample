@@ -1,9 +1,11 @@
-# CPG_test_inter
-**by Jarosław Krawczyszyn**
+# Fast 2D board game example
+Example draws random grid which can be scaled by slider. There is white movable unit which spawns other color units in spiral pattern around itself. Clear button removes units which have neighbors of same color.
 
+It illustrates techniques to optimize drawing very large grid and fast addition/removal of units on grid.
+
+## Technical details
 - Project was created in Unity 2022.3.7f1.
 - Grid size is set in Assets/Resources/BoardConfig.json
 - Other configurations as ScriptableObjects are in Assets/Configs
-- Considering that only readability and simplicity of code would be evaluated, without mentioning extendability, I opted to use simple enum types to identify objects in board model. To better accomodate further project development I would use scriptable objects to easly add new types of fields and items, without developers involvement, and create gameplay model from this to use in gamestate.
-- Adhering to not using third party packages I created simple DI manager. I usually use Zenject.
+- Simple service locator is used as a module system.
 - Tested on a phone with 2500x2500 size and 120fps with no framerate drops.
